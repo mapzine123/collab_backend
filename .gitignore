@@ -1,0 +1,107 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# Java 관련 파일
+*.class
+*.jar
+*.war
+*.ear
+
+# IDEA 관련 파일
+*.iml
+.idea/
+*.ipr
+*.iws
+.idea/
+
+# Eclipse 관련 파일
+.classpath
+.project
+.settings/
+
+# NetBeans 관련 파일
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code 관련 파일
+.vscode/
+
+# 빌드 디렉토리
+target/
+out/
+
+# 로그 파일
+*.log
+
+# OS별 파일
+.DS_Store
+Thumbs.db
+
+# Maven 관련 파일
+log/
+logs/
+target/
+!src/main/resources/static/
+!src/main/resources/templates/
+dependency-reduced-pom.xml
+release.properties
+dependency-reduced-pom.xml.asc
+release.properties.asc
+
+# 환경 설정 파일
+*.properties
+*.yml
+*.yaml
+
+# 기타
+*.swp
+*.swo
+*~
+
+# 환경에 따라 다를 수 있는 파일들
+.env
+.env.*
+!.env.example
+*.local
+.idea/
+*.iml
+.idea/
