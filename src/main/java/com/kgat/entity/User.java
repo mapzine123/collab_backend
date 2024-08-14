@@ -15,6 +15,11 @@ import java.util.Objects;
 @Entity
 @Table(name="users")
 public class User {
+
+    public User(String id) {
+        this.id = id;
+    }
+
     @Id
     @Column(nullable = false)
     private String id;
@@ -22,6 +27,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String profileImagePath;
 
     @Override
     public String toString() {
