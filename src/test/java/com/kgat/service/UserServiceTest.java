@@ -31,7 +31,7 @@ class UserServiceTest {
 
         when(userRepository.save(user)).thenReturn(user);
 
-        User saveUser = userRepository.save(user);
+        User saveUser = userService.save(user);
 
         assertThat(saveUser).isNotNull();
         assertThat(saveUser.getId()).isEqualTo("user1");
