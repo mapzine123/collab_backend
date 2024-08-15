@@ -24,9 +24,13 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public Page<Article> getArticles(int page) {
+    public Page<Article> getArticles(int page, String search) {
         Pageable pageable = PageRequest.of(page, 10);
-        return articleRepository.findAll(pageable);
+        if(search.trim().equals("")) {
+            return articleRepository.findAll(pageable);
+        } else {
+            return articleRepository.findByArticleTitleContaining(search, pageable);
+        }
     }
 
     public Article saveArticle(Article article) {

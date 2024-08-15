@@ -18,9 +18,9 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Article>> getArticles(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<Page<Article>> getArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue="") String search) {
 
-        Page<Article> articlePage = articleService.getArticles(page);
+        Page<Article> articlePage = articleService.getArticles(page, search);
         if(articlePage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
