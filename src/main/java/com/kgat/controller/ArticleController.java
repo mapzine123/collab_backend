@@ -3,12 +3,9 @@ package com.kgat.controller;
 import com.kgat.entity.Article;
 import com.kgat.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -21,13 +18,26 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Article>> getArticles() {
-        List<Article> allArticles = articleService.getAllArticle();
+    public ResponseEntity<Page<Article>> getArticles(@RequestParam(defaultValue = "0") int page) {
 
-        if(allArticles.isEmpty()) {
+        Page<Article> articlePage = articleService.getArticles(page);
+        if(articlePage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(allArticles);
+        return ResponseEntity.ok(articlePage);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> saveArticle(@RequestBody Article article) {
+        Article savedArticle = articleService.saveArticle(article);
+
+        System.out.println(article);
+
+        if(savedArticle == null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(savedArticle.toString());
+        }
     }
 }

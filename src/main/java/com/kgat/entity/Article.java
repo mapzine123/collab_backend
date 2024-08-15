@@ -18,7 +18,6 @@ import java.util.Objects;
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique=true)
     private Long articleNum;
 
     @Column(nullable = false)
@@ -51,6 +50,7 @@ public class Article {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
@@ -60,8 +60,20 @@ public class Article {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Article{" +
+                "articleNum=" + articleNum +
+                ", articleTitle='" + articleTitle + '\'' +
+                ", articleContent='" + articleContent + '\'' +
+                ", articleWriter='" + articleWriter + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", viewCount=" + viewCount +
+                ", likeCount=" + likeCount +
+                ", commentCount=" + commentCount +
+                ", hateCount=" + hateCount +
+                '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
