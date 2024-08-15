@@ -32,7 +32,7 @@ class AuthServiceTest {
         String inputId = "abc";
         String inputPw = "123";
 
-        User user = new User("abc", "123");
+        User user = new User("abc", "123", "aa");
         when(userRepository.findById("abc")).thenReturn(Optional.of(user));
 
         User findUser = authService.login(inputId, inputPw);

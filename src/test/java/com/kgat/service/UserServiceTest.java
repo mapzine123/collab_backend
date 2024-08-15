@@ -27,7 +27,7 @@ class UserServiceTest {
     @Test
     @DisplayName("회원가입 성공")
     void saveSuccessed() {
-        User user = new User("user1", "1234");
+        User user = new User("user1", "1234", "abe");
 
         when(userRepository.save(user)).thenReturn(user);
 
@@ -41,7 +41,7 @@ class UserServiceTest {
     @Test
     @DisplayName("회원가입 실패")
     void saveFailed() {
-        User user = new User("user1", "1234");
+        User user = new User("user1", "1234", "abe");
 
         when(userRepository.save(user)).thenThrow(new DataIntegrityViolationException("Duplicate entry"));
 

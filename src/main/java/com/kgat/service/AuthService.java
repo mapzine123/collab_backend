@@ -1,7 +1,6 @@
 package com.kgat.service;
 
 import com.kgat.entity.User;
-import com.kgat.exception.WrongPasswordException;
 import com.kgat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
