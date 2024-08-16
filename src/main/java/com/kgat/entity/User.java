@@ -20,6 +20,11 @@ public class User {
         this.id = id;
     }
 
+    public User(String id, String profileImagePath) {
+        this.id = id;
+        this.profileImagePath = profileImagePath;
+    }
+
     @Id
     @Column(nullable = false)
     private String id;
@@ -35,8 +40,10 @@ public class User {
         return "User{" +
                 "id='" + id + '\'' +
                 ", password='" + password + '\'' +
+                ", profileImagePath='" + profileImagePath + '\'' +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {

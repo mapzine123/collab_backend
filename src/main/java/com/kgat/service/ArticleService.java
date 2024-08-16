@@ -40,4 +40,9 @@ public class ArticleService {
             return null;
         }
     }
+
+    public Page<Article> getArticlesByWriter(String writer, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return articleRepository.findByArticleWriter(writer, pageable);
+    }
 }

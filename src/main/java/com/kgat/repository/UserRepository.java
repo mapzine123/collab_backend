@@ -15,4 +15,9 @@ public interface UserRepository extends CrudRepository<User, String> {
     @Transactional
     @Query("UPDATE User u SET u.profileImagePath = :profileImagePath WHERE u.id = :userId")
     void updateProfileImagePath(@Param("profileImagePath") String profileImagePath, @Param("userId") String userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.password = :password WHERE u.id = :userId")
+    void updatePassword(@Param("password") String password, @Param("userId") String userId);
 }
