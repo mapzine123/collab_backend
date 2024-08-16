@@ -2,6 +2,7 @@ package com.kgat.controller;
 
 import com.kgat.entity.User;
 import com.kgat.service.UserService;
+import com.kgat.vo.PasswordUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -28,6 +29,17 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(savedUser);
+    }
+
+    @PostMapping
+    @RequestMapping("/password")
+    public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateRequest request) {
+        try {
+            userService.updateUserPassword(request.getPassword(), request.getUserId());
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/image")

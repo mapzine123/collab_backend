@@ -25,6 +25,9 @@ public class UserService {
     public void saveUserProfileImage(User user) throws IOException {
         // 프로필 이미지 경로 DB에 업데이트
         userRepository.updateProfileImagePath(user.getProfileImagePath(), user.getId());
+    }
 
+    public void updateUserPassword(String password, String userId) {
+        userRepository.updatePassword(password, userId);
     }
 }
