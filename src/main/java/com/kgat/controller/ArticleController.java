@@ -32,12 +32,21 @@ public class ArticleController {
     public ResponseEntity<String> saveArticle(@RequestBody Article article) {
         Article savedArticle = articleService.saveArticle(article);
 
-        System.out.println(article);
-
         if(savedArticle == null) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok(savedArticle.toString());
         }
+    }
+
+    @GetMapping
+    @RequestMapping("/user")
+    public ResponseEntity<Page<Article>> getUserArticles(@RequestParam int page, @RequestParam String userId) {
+        Page<Article> articlePage = articleService.getArticlesByWriter(userId, page);
+
+        if(articlePage.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articlePage);
     }
 }

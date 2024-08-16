@@ -13,4 +13,7 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
 
     // 제목 검색
     Page<Article> findByArticleTitleContaining(String keyword, Pageable pageable);
+
+    // 작성자로 검색
+    Page<Article> findByArticleWriter(String articleWriter, Pageable pageable);
 }
