@@ -12,9 +12,6 @@ import java.io.InputStream;
 @Service
 public class UserService {
     @Autowired
-    private FileStorageService fileStorageService;
-
-    @Autowired
     private UserRepository userRepository;
 
     public User save(User user) {
