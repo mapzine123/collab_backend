@@ -25,12 +25,9 @@ public class UserService {
         }
     }
 
-    public void saveUserProfileImage(User user, InputStream inputStream) throws IOException {
-        // 파일 저장 후 저장 경로 반환
-        String profileImagePath = fileStorageService.saveProfileImage(inputStream, user.getId());
-
+    public void saveUserProfileImage(User user) throws IOException {
         // 프로필 이미지 경로 DB에 업데이트
-        userRepository.updateProfileImagePath(user.getId(), profileImagePath);
+        userRepository.updateProfileImagePath(user.getProfileImagePath(), user.getId());
 
     }
 }
