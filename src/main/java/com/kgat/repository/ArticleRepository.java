@@ -16,4 +16,9 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
 
     // 작성자로 검색
     Page<Article> findByArticleWriter(String articleWriter, Pageable pageable);
+
+    // 작성자명과 게시글 번호로 삭제
+    void deleteByArticleWriterAndArticleNum(String userId, Integer articleNum);
+
+    Article findByArticleNum(Long articleNum);
 }

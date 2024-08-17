@@ -2,6 +2,8 @@ package com.kgat.controller;
 
 import com.kgat.entity.Article;
 import com.kgat.service.ArticleService;
+import com.kgat.vo.DeleteArticleRequest;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +50,26 @@ public class ArticleController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(articlePage);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteArticle(@RequestBody DeleteArticleRequest request) {
+        try {
+            articleService.deleteArticle(request);
+            return ResponseEntity.ok("DELETE SUCCESS");
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateArticle(@RequestBody Article article) {
+        try {
+            articleService.updateArticle(article);
+            return ResponseEntity.ok("UPDATE SUCCESS");
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 }
