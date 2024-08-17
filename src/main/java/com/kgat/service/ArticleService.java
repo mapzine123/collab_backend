@@ -2,6 +2,8 @@ package com.kgat.service;
 
 import com.kgat.entity.Article;
 import com.kgat.repository.ArticleRepository;
+import com.kgat.vo.DeleteArticleRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -44,5 +46,34 @@ public class ArticleService {
     public Page<Article> getArticlesByWriter(String writer, int page) {
         Pageable pageable = PageRequest.of(page, 5);
         return articleRepository.findByArticleWriter(writer, pageable);
+    }
+
+    @Transactional
+    public void deleteArticle(DeleteArticleRequest request) {
+        articleRepository.deleteByArticleWriterAndArticleNum(request.getUserId(), request.getArticleNum());
+    }
+
+    public void updateArticle(Article article) {
+        boolean isUpdated = false;
+
+        try {
+            Article prevArticle = articleRepository.findByArticleNum(article.getArticleNum());
+
+            if(!article.getArticleTitle().equals(prevArticle.getArticleTitle())) {
+                prevArticle.setArticleTitle(article.getArticleTitle());
+                isUpdated = true;
+            }
+
+            if(!article.getArticleContent().equals(prevArticle.getArticleContent())) {
+                prevArticle.setArticleContent(prevArticle.getArticleContent());
+                isUpdated = true;
+            }
+            if(isUpdated) {
+                articleRepository.save(prevArticle);
+            }
+
+        } catch(DataIntegrityViolationException e) {
+
+        }
     }
 }
