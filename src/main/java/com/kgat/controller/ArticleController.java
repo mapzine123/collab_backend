@@ -2,8 +2,7 @@ package com.kgat.controller;
 
 import com.kgat.entity.Article;
 import com.kgat.service.ArticleService;
-import com.kgat.vo.DeleteArticleRequest;
-import org.apache.coyote.Response;
+import com.kgat.vo.ArticleData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +19,9 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Article>> getArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue="") String search) {
+    public ResponseEntity<Page<Article>> getArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue="") String search, @RequestParam(defaultValue="") String userId) {
 
-        Page<Article> articlePage = articleService.getArticles(page, search);
+        Page<Article> articlePage = articleService.getArticles(page, search, userId);
         if(articlePage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -53,9 +52,9 @@ public class ArticleController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteArticle(@RequestBody DeleteArticleRequest request) {
+    public ResponseEntity<String> deleteArticle(@RequestBody ArticleData data) {
         try {
-            articleService.deleteArticle(request);
+            articleService.deleteArticle(data);
             return ResponseEntity.ok("DELETE SUCCESS");
         } catch(Exception e) {
             return ResponseEntity.badRequest().build();
@@ -71,5 +70,21 @@ public class ArticleController {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @PostMapping
+    @RequestMapping("/reaction/like")
+    public ResponseEntity<Article> likeArticle(@RequestBody ArticleData data) {
+        Article article = articleService.likeArticle(data);
+
+        return ResponseEntity.ok(article);
+    }
+
+    @PostMapping
+    @RequestMapping("/reaction/hate")
+    public ResponseEntity<Article> hateArticle(@RequestBody ArticleData data) {
+        Article article = articleService.hateArticle(data);
+
+        return ResponseEntity.ok(article);
     }
 }
