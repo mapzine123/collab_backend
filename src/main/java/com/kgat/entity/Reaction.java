@@ -12,8 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="commentReactions")
-public class CommentReaction {
+@Table(
+        name="reactions",
+        indexes = {
+                @Index(name="idx_articleNum_userId", columnList = "articleNum, userId")
+        }
+    )
+public class Reaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reactionId;
@@ -27,4 +32,10 @@ public class CommentReaction {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReactionType reactionType;
+
+    public Reaction(Long articleNum, String userId, ReactionType reactionType) {
+        this.articleNum = articleNum;
+        this.userId = userId;
+        this.reactionType = reactionType;
+    }
 }
