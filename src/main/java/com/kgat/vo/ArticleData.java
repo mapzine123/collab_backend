@@ -3,18 +3,17 @@ package com.kgat.vo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteArticleRequest {
+public class ArticleData {
     private String userId;
-    private int articleNum;
+    private long articleNum;
 
     @Override
     public String toString() {
-        return"DeleteArticleRequest{" +
+        return"ArticleData{" +
                 "userId='" + userId + '\'' +
             ", articleNum=" + articleNum +
             '}';
