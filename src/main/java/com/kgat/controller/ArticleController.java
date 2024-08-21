@@ -1,9 +1,12 @@
 package com.kgat.controller;
 
 import com.kgat.entity.Article;
+import com.kgat.entity.Comment;
 import com.kgat.service.ArticleService;
+import com.kgat.service.CommentService;
 import com.kgat.vo.ArticleData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
+    private final CommentService commentService;
 
     @Autowired
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, CommentService commentService) {
         this.articleService = articleService;
+        this.commentService = commentService;
     }
 
     @GetMapping
@@ -40,8 +45,7 @@ public class ArticleController {
         }
     }
 
-    @GetMapping
-    @RequestMapping("/user")
+    @GetMapping("/user")
     public ResponseEntity<Page<Article>> getUserArticles(@RequestParam int page, @RequestParam String userId) {
         Page<Article> articlePage = articleService.getArticlesByWriter(userId, page);
 
@@ -72,19 +76,40 @@ public class ArticleController {
 
     }
 
-    @PostMapping
-    @RequestMapping("/reaction/like")
+    @PostMapping("/reaction/like")
     public ResponseEntity<Article> likeArticle(@RequestBody ArticleData data) {
         Article article = articleService.likeArticle(data);
 
         return ResponseEntity.ok(article);
     }
 
-    @PostMapping
-    @RequestMapping("/reaction/hate")
+    @PostMapping("/reaction/hate")
     public ResponseEntity<Article> hateArticle(@RequestBody ArticleData data) {
         Article article = articleService.hateArticle(data);
 
         return ResponseEntity.ok(article);
+    }
+
+    @GetMapping("/comments/{articleNum}")
+    public ResponseEntity<Page<Comment>> getComment(@PathVariable("articleNum") Long articleNum) {
+        // 게시글에 대한 댓글들 리스트로 가져오기
+        Page<Comment> comments = commentService.getComments(articleNum);
+
+        if(comments.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(comments);
+    }
+
+    @PostMapping("/comments")
+    public ResponseEntity<Comment> writeComment(@RequestBody Comment comment) {
+        try {
+            Comment savedComment = commentService.saveComment(comment);
+
+            return ResponseEntity.ok(savedComment);
+        } catch(DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
