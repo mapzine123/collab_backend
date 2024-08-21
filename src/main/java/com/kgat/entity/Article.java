@@ -80,9 +80,10 @@ public class Article {
                 ", likeCount=" + likeCount +
                 ", commentCount=" + commentCount +
                 ", hateCount=" + hateCount +
+                ", isLike=" + isLike +
+                ", isHate=" + isHate +
                 '}';
     }
-
 
     @Override
     public boolean equals(Object o) {
