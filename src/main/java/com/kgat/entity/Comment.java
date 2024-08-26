@@ -1,5 +1,6 @@
 package com.kgat.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,9 +47,21 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = true)
+    private LocalDateTime updatedAt = null;
+
+    @Transient
+    @JsonProperty("isModified")
+    private boolean isModified = false;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
 
@@ -64,6 +77,22 @@ public class Comment {
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
         return commentId.equals(comment.commentId);
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "commentId=" + commentId +
+                ", commentText='" + commentText + '\'' +
+                ", articleNum=" + articleNum +
+                ", userId='" + userId + '\'' +
+                ", replyCount=" + replyCount +
+                ", likeCount=" + likeCount +
+                ", hateCount=" + hateCount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", isModified=" + isModified +
+                '}';
     }
 
     @Override
