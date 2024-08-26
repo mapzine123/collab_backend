@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Integer> {
+public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     // 제목 검색
     Page<Article> findByArticleTitleContaining(String keyword, Pageable pageable);
