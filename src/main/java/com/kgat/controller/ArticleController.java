@@ -6,7 +6,6 @@ import com.kgat.service.ArticleService;
 import com.kgat.service.CommentService;
 import com.kgat.vo.ArticleData;
 import com.kgat.vo.CommentData;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -117,8 +116,6 @@ public class ArticleController {
 
     @PutMapping("/comments")
     public ResponseEntity<Comment> modifyComment(@RequestBody CommentData data) {
-        System.out.println("잘왔어");
-        System.out.println(data);
         try {
             Comment comment = commentService.updateComment(data);
 
@@ -127,6 +124,17 @@ public class ArticleController {
             }
 
             return ResponseEntity.ok(comment);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Comment> deleteComment(@PathVariable Long commentId) {
+        try {
+            commentService.deleteComment(commentId);
+
+            return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.badRequest().build();
         }

@@ -44,7 +44,14 @@ public class CommentService {
             e.printStackTrace();
             return null;
         }
+    }
 
-
+    @Transactional
+    public void deleteComment(Long commentId) throws Exception {
+        try {
+            commentRepository.deleteByCommentId(commentId);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
