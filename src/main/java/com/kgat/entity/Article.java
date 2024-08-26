@@ -43,9 +43,6 @@ public class Article {
     private int likeCount;
 
     @Column(nullable = false)
-    private int commentCount;
-
-    @Column(nullable = false)
     private int hateCount;
 
     @Transient
@@ -78,7 +75,6 @@ public class Article {
                 ", updatedAt=" + updatedAt +
                 ", viewCount=" + viewCount +
                 ", likeCount=" + likeCount +
-                ", commentCount=" + commentCount +
                 ", hateCount=" + hateCount +
                 ", isLike=" + isLike +
                 ", isHate=" + isHate +
