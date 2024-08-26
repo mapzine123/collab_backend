@@ -31,8 +31,7 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
-    @PostMapping
-    @RequestMapping("/password")
+    @PostMapping("/password")
     public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateRequest request) {
         try {
             userService.updateUserPassword(request.getPassword(), request.getUserId());
