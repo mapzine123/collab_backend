@@ -139,4 +139,18 @@ public class ArticleController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping("/comments/reaction/like")
+    public ResponseEntity<Comment> likeArticle(@RequestBody CommentData data) {
+        Comment comment = commentService.likeComment(data);
+
+        return ResponseEntity.ok(comment);
+    }
+
+    @PostMapping("/comments/reaction/hate")
+    public ResponseEntity<Comment> hateArticle(@RequestBody CommentData data) {
+        Comment comment = commentService.hateComment(data);
+
+        return ResponseEntity.ok(comment);
+    }
 }
