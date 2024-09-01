@@ -20,7 +20,7 @@ import java.util.Objects;
                 @Index(name="idx_articleNum_userId", columnList = "articleNum, userId")
         }
     )
-public class Reaction {
+public class ArticleReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reactionId;
@@ -35,7 +35,7 @@ public class Reaction {
     @Column(nullable = false)
     private ReactionType reactionType;
 
-    public Reaction(Long articleNum, String userId, ReactionType reactionType) {
+    public ArticleReaction(Long articleNum, String userId, ReactionType reactionType) {
         this.articleNum = articleNum;
         this.userId = userId;
         this.reactionType = reactionType;
@@ -45,8 +45,8 @@ public class Reaction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Reaction reaction = (Reaction) o;
-        return reactionId.equals(reaction.reactionId);
+        ArticleReaction articleReaction = (ArticleReaction) o;
+        return reactionId.equals(articleReaction.reactionId);
     }
 
     @Override

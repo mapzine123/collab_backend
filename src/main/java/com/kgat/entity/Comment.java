@@ -21,7 +21,7 @@ import java.util.Objects;
                 @Index(name="comment_articleNum_userId", columnList = "articleNum, userId")
         }
 )
-public class Comment {
+public class Comment extends ReactionContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
@@ -100,3 +100,4 @@ public class Comment {
         return Objects.hash(commentId, commentText, articleNum, userId, replyCount, likeCount, hateCount);
     }
 }
+
