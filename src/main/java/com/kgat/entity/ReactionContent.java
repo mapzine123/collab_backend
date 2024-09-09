@@ -2,13 +2,15 @@ package com.kgat.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ReactionContent implements Toggleable {
+@MappedSuperclass
+public class ReactionContent extends Content implements Toggleable {
     @Column(nullable = false)
     private int likeCount;
 
