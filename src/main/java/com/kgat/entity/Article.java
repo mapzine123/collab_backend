@@ -19,7 +19,7 @@ import java.util.Objects;
 public class Article extends ReactionContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long articleNum;
+    private Long articleId;
 
     @Column(nullable = false)
     private String articleTitle;
@@ -55,7 +55,7 @@ public class Article extends ReactionContent {
     @Override
     public String toString() {
         return "Article{" +
-                "articleNum=" + articleNum +
+                "articleId=" + articleId +
                 ", articleTitle='" + articleTitle + '\'' +
                 ", articleContent='" + articleContent + '\'' +
                 ", articleWriter='" + articleWriter + '\'' +
@@ -77,12 +77,12 @@ public class Article extends ReactionContent {
         }
 
         Article article = (Article) o;
-        return Objects.equals(articleNum, article.articleNum);
+        return Objects.equals(articleId, article.articleId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(articleNum);
+        return Objects.hash(articleId);
     }
 
 }

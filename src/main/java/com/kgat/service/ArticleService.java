@@ -46,7 +46,7 @@ public class ArticleService {
 
 
         for(Article article : articlePage.getContent()) {
-            Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleNumAndUserId(article.getArticleNum(), userId);
+            Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleIdAndUserId(article.getArticleId(), userId);
 
             if(reaction.isPresent()) {
                 if(reaction.get().getReactionType().equals(ReactionType.LIKE)) {
@@ -75,14 +75,14 @@ public class ArticleService {
 
     @Transactional
     public void deleteArticle(ArticleData data) {
-        articleRepository.deleteByArticleWriterAndArticleNum(data.getUserId(), data.getArticleNum());
+        articleRepository.deleteByArticleWriterAndArticleId(data.getUserId(), data.getArticleId());
     }
 
     public void updateArticle(Article article) {
         boolean isUpdated = false;
 
         try {
-            Article prevArticle = articleRepository.findByArticleNum(article.getArticleNum());
+            Article prevArticle = articleRepository.findByArticleId(article.getArticleId());
 
             if(!article.getArticleTitle().equals(prevArticle.getArticleTitle())) {
                 prevArticle.setArticleTitle(article.getArticleTitle());
@@ -105,8 +105,8 @@ public class ArticleService {
     @Transactional
     public Article likeArticle(ArticleData data) {
         // DB에서 reaction 찾아옴
-        Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleNumAndUserId(data.getArticleNum(), data.getUserId());
-        Article article = articleRepository.findByArticleNum(data.getArticleNum());
+        Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleIdAndUserId(data.getArticleId(), data.getUserId());
+        Article article = articleRepository.findByArticleId(data.getArticleId());
 
         // 만약에 값이 있으면?
         if(reaction.isPresent()) {
@@ -135,12 +135,12 @@ public class ArticleService {
         } else {
             // 새 좋아요 리액션 추가
             article.toggleLike();
-            articleReactionRepository.save(new ArticleReaction(data.getArticleNum(), data.getUserId(), ReactionType.LIKE));
+            articleReactionRepository.save(new ArticleReaction(data.getArticleId(), data.getUserId(), ReactionType.LIKE));
         }
 
         // article like, hate 카운트 업데이트
-        article.setLikeCount(articleReactionRepository.countByArticleNumAndReactionType(data.getArticleNum(), ReactionType.LIKE));
-        article.setHateCount(articleReactionRepository.countByArticleNumAndReactionType(data.getArticleNum(), ReactionType.HATE));
+        article.setLikeCount(articleReactionRepository.countByArticleIdAndReactionType(data.getArticleId(), ReactionType.LIKE));
+        article.setHateCount(articleReactionRepository.countByArticleIdAndReactionType(data.getArticleId(), ReactionType.HATE));
         articleRepository.save(article);
 
         return article;
@@ -149,8 +149,8 @@ public class ArticleService {
     @Transactional
     public Article hateArticle(ArticleData data) {
         // DB에서 reaction 찾아옴
-        Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleNumAndUserId(data.getArticleNum(), data.getUserId());
-        Article article = articleRepository.findByArticleNum(data.getArticleNum());
+        Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleIdAndUserId(data.getArticleId(), data.getUserId());
+        Article article = articleRepository.findByArticleId(data.getArticleId());
 
         // 만약에 값이 있으면?
         if(reaction.isPresent()) {
@@ -179,12 +179,12 @@ public class ArticleService {
         } else {
             // 새 좋아요 리액션 추가
             article.toggleHate();
-            articleReactionRepository.save(new ArticleReaction(data.getArticleNum(), data.getUserId(), ReactionType.HATE));
+            articleReactionRepository.save(new ArticleReaction(data.getArticleId(), data.getUserId(), ReactionType.HATE));
         }
 
         // article like, hate 카운트 업데이트
-        article.setLikeCount(articleReactionRepository.countByArticleNumAndReactionType(data.getArticleNum(), ReactionType.LIKE));
-        article.setHateCount(articleReactionRepository.countByArticleNumAndReactionType(data.getArticleNum(), ReactionType.HATE));
+        article.setLikeCount(articleReactionRepository.countByArticleIdAndReactionType(data.getArticleId(), ReactionType.LIKE));
+        article.setHateCount(articleReactionRepository.countByArticleIdAndReactionType(data.getArticleId(), ReactionType.HATE));
         articleRepository.save(article);
 
         return article;

@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ArticleData {
     private String userId;
-    private long articleNum;
+    private long articleId;
 
     @Override
     public String toString() {
         return"ArticleData{" +
                 "userId='" + userId + '\'' +
-            ", articleNum=" + articleNum +
+            ", articleId=" + articleId +
             '}';
     }
 }
