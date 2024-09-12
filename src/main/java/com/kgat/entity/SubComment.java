@@ -40,6 +40,16 @@ public class SubComment extends ReactionContent {
     }
 
     @Override
+    public String toString() {
+        return "SubComment{" +
+                "subCommentId=" + subCommentId +
+                ", commentId=" + commentId +
+                ", userId='" + userId + '\'' +
+                ", subCommentText='" + subCommentText + '\'' +
+                "} " + super.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
