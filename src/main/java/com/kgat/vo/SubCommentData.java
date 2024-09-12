@@ -12,16 +12,30 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubCommentData {
+    private long subCommentId;
     private long commentId;
     private String userId;
     private String subCommentText;
 
+    public SubCommentData(long commentId, String userId, String subCommentText) {
+        this.commentId = commentId;
+        this.userId = userId;
+        this.subCommentText = subCommentText;
+    }
+
+    public SubCommentData(long subCommentId, String userId) {
+        this.subCommentId = subCommentId;
+        this.userId = userId;
+    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SubCommentData that = (SubCommentData) o;
-        return commentId == that.commentId && Objects.equals(userId, that.userId) && Objects.equals(subCommentText, that.subCommentText);
+    public String toString() {
+        return "SubCommentData{" +
+                "subCommentId=" + subCommentId +
+                ", commentId=" + commentId +
+                ", userId='" + userId + '\'' +
+                ", subCommentText='" + subCommentText + '\'' +
+                '}';
     }
 
     @Override
