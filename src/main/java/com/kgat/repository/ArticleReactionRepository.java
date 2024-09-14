@@ -5,6 +5,7 @@ import com.kgat.vo.ReactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,5 @@ public interface ArticleReactionRepository extends JpaRepository<ArticleReaction
     // ArticleId와 ReactionType로 식별하는 집계 쿼리
     int countByArticleIdAndReactionType(long articleId, ReactionType reactionType);
 
+    List<ArticleReaction> findByArticleIdInAndUserId(List<Long> articleIds, String userId);
 }
