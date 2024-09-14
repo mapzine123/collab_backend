@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubCommentRepository extends JpaRepository<SubComment, Long> {
     Page<SubComment> findByCommentId(Long commentId, Pageable pageable);
+
+    SubComment findBySubCommentIdAndUserId(long subCommentId, String userId);
 }
