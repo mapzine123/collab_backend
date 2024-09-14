@@ -14,7 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
@@ -37,24 +40,37 @@ public class ArticleService {
 
         Page<Article> articlePage;
 
-
-        if(search.trim().isEmpty()) {
+        // 검색어 유무에 따라 적절한 메서드 호출
+        if(search == null || search.trim().isEmpty()) {
             articlePage = articleRepository.findAll(pageable);
         } else {
-            articlePage = articleRepository.findByArticleTitleContaining(search, pageable);
+            articlePage = articleRepository.findByArticleTitleContaining(search.trim(), pageable);
         }
 
+        if(userId != null && !articlePage.isEmpty()) {
+            // 모든 Article ID 추출
+            List<Long> articleIds = articlePage.getContent().stream()
+                    .map(Article::getArticleId)
+                    .collect(Collectors.toList());
 
-        for(Article article : articlePage.getContent()) {
-            Optional<ArticleReaction> reaction = articleReactionRepository.findByArticleIdAndUserId(article.getArticleId(), userId);
+            // 한번의 쿼리로 모든 관련 반응 조회
+            List<ArticleReaction> reactions = articleReactionRepository.findByArticleIdInAndUserId(articleIds, userId);
 
-            if(reaction.isPresent()) {
-                if(reaction.get().getReactionType().equals(ReactionType.LIKE)) {
-                    article.setLike(true);
-                } else {
-                    article.setHate(true);
-                }
-            }
+            // 반응을 Map으로 변환
+            Map<Long, ArticleReaction> reactionMap = reactions.stream()
+                    .collect(Collectors.toMap(ArticleReaction::getArticleId, Function.identity()));
+
+            // 각 Article에 반응 정보 설정
+            articlePage.getContent().forEach(article -> {
+               ArticleReaction reaction = reactionMap.get(article.getArticleId());
+               if(reaction != null) {
+                   if(ReactionType.LIKE.equals(reaction.getReactionType())) {
+                       article.setLike(true);
+                   } else {
+                       article.setHate(true);
+                   }
+               }
+            });
         }
 
         return articlePage;
