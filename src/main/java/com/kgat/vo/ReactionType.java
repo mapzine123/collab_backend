@@ -2,5 +2,8 @@ package com.kgat.vo;
 
 public enum ReactionType {
     LIKE,
-    HATE
+    HATE,
+    NEW,
+    CANCEL,
+    CHANGE
 }

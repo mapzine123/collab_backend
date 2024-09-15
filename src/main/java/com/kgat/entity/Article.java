@@ -19,7 +19,7 @@ import java.util.Objects;
 public class Article extends ReactionContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long articleNum;
+    private Long articleId;
 
     @Column(nullable = false)
     private String articleTitle;
@@ -31,36 +31,15 @@ public class Article extends ReactionContent {
     private String articleWriter;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @Column(nullable = false)
     private int viewCount;
-
-
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
     @Override
     public String toString() {
         return "Article{" +
-                "articleNum=" + articleNum +
+                "articleId=" + articleId +
                 ", articleTitle='" + articleTitle + '\'' +
                 ", articleContent='" + articleContent + '\'' +
                 ", articleWriter='" + articleWriter + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 ", viewCount=" + viewCount +
 
                 '}';
@@ -77,12 +56,12 @@ public class Article extends ReactionContent {
         }
 
         Article article = (Article) o;
-        return Objects.equals(articleNum, article.articleNum);
+        return Objects.equals(articleId, article.articleId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(articleNum);
+        return Objects.hash(articleId);
     }
 
 }

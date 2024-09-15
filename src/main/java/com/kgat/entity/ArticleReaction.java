@@ -15,9 +15,9 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(
-        name="reactions",
+        name="articleReactions",
         indexes = {
-                @Index(name="idx_articleNum_userId", columnList = "articleNum, userId")
+                @Index(name="idx_articleId_userId", columnList = "articleId, userId")
         }
     )
 public class ArticleReaction {
@@ -26,7 +26,7 @@ public class ArticleReaction {
     private Long reactionId;
 
     @Column(nullable = false)
-    private Long articleNum;
+    private Long articleId;
 
     @Column(nullable = false)
     private String userId;
@@ -35,8 +35,8 @@ public class ArticleReaction {
     @Column(nullable = false)
     private ReactionType reactionType;
 
-    public ArticleReaction(Long articleNum, String userId, ReactionType reactionType) {
-        this.articleNum = articleNum;
+    public ArticleReaction(Long articleId, String userId, ReactionType reactionType) {
+        this.articleId = articleId;
         this.userId = userId;
         this.reactionType = reactionType;
     }
@@ -51,6 +51,6 @@ public class ArticleReaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(reactionId, articleNum, userId, reactionType);
+        return Objects.hash(reactionId, articleId, userId, reactionType);
     }
 }

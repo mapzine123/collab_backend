@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -18,7 +20,7 @@ import java.util.Objects;
 @Table(
         name="comments",
         indexes = {
-                @Index(name="comment_articleNum_userId", columnList = "articleNum, userId")
+                @Index(name="comment_articleId_userId", columnList = "articleId, userId")
         }
 )
 public class Comment extends ReactionContent {
@@ -30,43 +32,24 @@ public class Comment extends ReactionContent {
     private String commentText;
 
     @Column(nullable = false)
-    private Long articleNum;
+    private Long articleId;
 
     @Column(nullable = false)
     private String userId;
 
     @Column(nullable = false)
-    private int replyCount = 0;
+    private int subCommentCount = 0;
 
-    @Column(nullable = false)
-    private int likeCount = 0;
-
-    @Column(nullable = false)
-    private int hateCount = 0;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = true)
-    private LocalDateTime updatedAt = null;
+    @Transient
+    @JsonProperty("subComments")
+    private List<SubComment> subComments = new ArrayList<SubComment>();
 
     @Transient
     @JsonProperty("isModified")
     private boolean isModified = false;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-
-    public Comment(Long articleNum, String userId, String commentText) {
-        this.articleNum = articleNum;
+    public Comment(Long articleId, String userId, String commentText) {
+        this.articleId = articleId;
         this.userId = userId;
         this.commentText = commentText;
     }
@@ -84,20 +67,16 @@ public class Comment extends ReactionContent {
         return "Comment{" +
                 "commentId=" + commentId +
                 ", commentText='" + commentText + '\'' +
-                ", articleNum=" + articleNum +
+                ", articleId=" + articleId +
                 ", userId='" + userId + '\'' +
-                ", replyCount=" + replyCount +
-                ", likeCount=" + likeCount +
-                ", hateCount=" + hateCount +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", replyCount=" + subCommentCount +
                 ", isModified=" + isModified +
                 '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(commentId, commentText, articleNum, userId, replyCount, likeCount, hateCount);
+        return Objects.hash(commentId, commentText, articleId, userId, subCommentCount);
     }
 }
 

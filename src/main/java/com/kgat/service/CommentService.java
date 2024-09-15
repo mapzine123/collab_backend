@@ -1,5 +1,7 @@
 package com.kgat.service;
 
+import com.kgat.entity.Article;
+import com.kgat.entity.ArticleReaction;
 import com.kgat.entity.Comment;
 import com.kgat.entity.CommentReaction;
 import com.kgat.repository.CommentReactionRepository;
@@ -14,7 +16,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -25,12 +31,38 @@ public class CommentService {
     @Autowired
     private CommentReactionRepository commentReactionRepository;
 
-    public Page<Comment> getComments(Long commentId) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createdAt");
+    public Page<Comment> getComments(Long articleId, String userId, Pageable pageable) {
+        // 게시글 id에 해당하는 모든 댓글을 페이징하여 조회
+        Page<Comment> comments = commentRepository.findAllByArticleId(articleId, pageable);
 
-        Page<Comment> comments = commentRepository.findAllByCommentId(commentId, pageable);
+        // userId가 있고, 댓글이 존재하는 경우에만 반응 정보 처리
+        if(userId != null && !comments.isEmpty()) {
+            // 조회된 모든 댓글의 ID 추출
+            List<Long> commentIds = comments.getContent().stream()
+                    .map(Comment::getCommentId)
+                    .collect(Collectors.toList());
 
+            // 추출한 댓글 id 리스트와 userId를 사용하여 해당 사용자의 반응 조회
+            // 조회 결과를 CommentId를 키로 하는 map으로 변환해 빠른 접근이 가능하게 함
+            Map<Long, CommentReaction> reactionMap = commentReactionRepository
+                    .findByCommentIdInAndUserId(commentIds, userId)
+                    .stream()
+                    .collect(Collectors.toMap(CommentReaction::getCommentId, Function.identity()));
 
+            // 각 댓글에 대해 사용자 반응 정보 설정
+            comments.getContent().forEach(comment -> {
+               CommentReaction reaction = reactionMap.get(comment.getCommentId());
+
+               // 반응 타입에 따라 Like 또는 Hate 상태 설정
+               if(reaction != null) {
+                   if(ReactionType.LIKE.equals(reaction.getReactionType())) {
+                       comment.setLike(true);
+                   } else {
+                       comment.setHate(true);
+                   }
+               }
+            });
+        }
         return comments;
     }
 

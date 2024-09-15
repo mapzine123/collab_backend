@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    Page<Comment> findAllByArticleNum(Long articleNum, Pageable pageable);
+    Page<Comment> findAllByArticleId(Long articleId, Pageable pageable);
 
     @Modifying
     @Transactional
@@ -26,4 +26,15 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Comment findByCommentId(Long commentId);
 
     Comment findByCommentIdAndUserId(Long commentId, String userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c SET c.subCommentCount = c.subCommentCount + 1 WHERE c.commentId = :commentId")
+    void postSubComment(@Param("commentId") Long commentId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c SET c.subCommentCount = c.subCommentCount - 1 WHERE c.commentId = :commentId")
+    void deleteSubComment(@Param("commentId") Long commentId);
+
 }
