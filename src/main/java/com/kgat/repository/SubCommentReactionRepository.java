@@ -14,4 +14,5 @@ public interface SubCommentReactionRepository extends JpaRepository<SubCommentRe
 
     int countBySubCommentIdAndReactionType(long subCommentNum, ReactionType reactionType);
     List<SubCommentReaction> findBySubCommentIdInAndUserId(List<Long> subCommentIds, String userId);
+    void deleteAllBySubCommentId(long subCommentId);
 }
