@@ -143,4 +143,23 @@ public class SubCommentService {
         return subCommentRepository.save(subComment);
     }
 
+    @Transactional
+    public void deleteSubComment(long commentId, long subCommentId) {
+        try {
+            subCommentRepository.deleteById(subCommentId);
+            subCommentReactionRepository.deleteAllBySubCommentId(subCommentId);
+            commentRepository.deleteSubComment(commentId);
+        } catch(Exception e) {
+            throw e;
+        }
+    }
+
+    @Transactional
+    public void modifySubComment(Long subCommentId, String subCommentText) {
+        try {
+            subCommentRepository.updateSubComment(subCommentText, subCommentId);
+        } catch(Exception e) {
+
+        }
+    }
 }
