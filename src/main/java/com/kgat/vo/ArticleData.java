@@ -2,14 +2,12 @@ package com.kgat.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class ArticleData {
-    private String userId;
-    private long articleId;
+    private final String userId;
+    private final long articleId;
 
     @Override
     public String toString() {
