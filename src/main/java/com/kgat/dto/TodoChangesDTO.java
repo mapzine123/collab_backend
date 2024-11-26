@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class TodoChangesDTO {
-    private List<TodoDTO> added;
+    private List<TodoDTO> updated;
     private List<TodoDTO> deleted;
-    private List<TodoDTO> modified;
 }
