@@ -43,10 +43,8 @@ public class Todo {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
     private LocalDateTime created;
 
-    @Column(nullable = false)
     private LocalDateTime updated;
 
     @PrePersist
