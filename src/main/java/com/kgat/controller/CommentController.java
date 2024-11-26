@@ -5,11 +5,9 @@ import com.kgat.entity.SubComment;
 import com.kgat.repository.SubCommentRepository;
 import com.kgat.service.CommentService;
 import com.kgat.service.SubCommentService;
-import com.kgat.vo.CommentData;
-import com.kgat.vo.SubCommentData;
+import com.kgat.dto.CommentDTO;
+import com.kgat.dto.SubCommentDTO;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PreUpdate;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -57,7 +55,7 @@ public class CommentController {
     }
 
     @PutMapping
-    public ResponseEntity<Comment> modifyComment(@RequestBody CommentData data) {
+    public ResponseEntity<Comment> modifyComment(@RequestBody CommentDTO data) {
         try {
             Comment comment = commentService.updateComment(data);
 
@@ -83,14 +81,14 @@ public class CommentController {
     }
 
     @PostMapping("/reaction/like")
-    public ResponseEntity<Comment> likeArticle(@RequestBody CommentData data) {
+    public ResponseEntity<Comment> likeArticle(@RequestBody CommentDTO data) {
         Comment comment = commentService.likeComment(data);
 
         return ResponseEntity.ok(comment);
     }
 
     @PostMapping("/reaction/hate")
-    public ResponseEntity<Comment> hateArticle(@RequestBody CommentData data) {
+    public ResponseEntity<Comment> hateArticle(@RequestBody CommentDTO data) {
         Comment comment = commentService.hateComment(data);
 
         return ResponseEntity.ok(comment);
@@ -114,7 +112,7 @@ public class CommentController {
     }
 
     @PostMapping("/subComments")
-    public ResponseEntity<SubComment> addSubComment(@RequestBody SubCommentData data) {
+    public ResponseEntity<SubComment> addSubComment(@RequestBody SubCommentDTO data) {
         try {
             SubComment subcomment = subCommentService.saveSubComment(data);
             return ResponseEntity.ok(subcomment);
@@ -124,7 +122,7 @@ public class CommentController {
     }
 
     @PostMapping("/subComments/like")
-    public ResponseEntity<?> likeSubComment(@RequestBody SubCommentData data) {
+    public ResponseEntity<?> likeSubComment(@RequestBody SubCommentDTO data) {
         try {
             SubComment subComment = subCommentService.likeSubComment(data.getSubCommentId(), data.getUserId());
 
@@ -138,7 +136,7 @@ public class CommentController {
     }
 
     @PostMapping("/subComments/hate")
-    public ResponseEntity<?> hateSubComment(@RequestBody SubCommentData data) {
+    public ResponseEntity<?> hateSubComment(@RequestBody SubCommentDTO data) {
         try {
             SubComment subComment = subCommentService.hateSubComment(data.getSubCommentId(), data.getUserId());
 

@@ -1,6 +1,7 @@
 package com.kgat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kgat.dto.UserSignupDTO;
 import com.kgat.entity.User;
 import com.kgat.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ class UserControllerTest {
     void createUserSuccess() throws Exception {
         User user = new User("user1", "1234");
 
-        when(userService.save(any(User.class))).thenReturn(user);
+        when(userService.save(any(UserSignupDTO.class))).thenReturn(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/user")
                 .contentType(MediaType.APPLICATION_JSON)

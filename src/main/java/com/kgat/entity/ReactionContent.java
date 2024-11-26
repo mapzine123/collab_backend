@@ -1,12 +1,10 @@
 package com.kgat.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kgat.vo.Constant;
 import com.kgat.vo.ReactionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

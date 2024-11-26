@@ -5,9 +5,8 @@ import com.kgat.entity.SubCommentReaction;
 import com.kgat.repository.CommentRepository;
 import com.kgat.repository.SubCommentReactionRepository;
 import com.kgat.repository.SubCommentRepository;
-import com.kgat.vo.Constant;
 import com.kgat.vo.ReactionType;
-import com.kgat.vo.SubCommentData;
+import com.kgat.dto.SubCommentDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -71,7 +69,7 @@ public class SubCommentService {
         return subComments;
     }
 
-    public SubComment saveSubComment(SubCommentData data) {
+    public SubComment saveSubComment(SubCommentDTO data) {
         SubComment subComment = new SubComment(data.getCommentId(), data.getSubCommentText(), data.getUserId());
         try {
             SubComment newSubComment = subCommentRepository.save(subComment);

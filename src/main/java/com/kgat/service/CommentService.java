@@ -1,19 +1,15 @@
 package com.kgat.service;
 
-import com.kgat.entity.Article;
-import com.kgat.entity.ArticleReaction;
 import com.kgat.entity.Comment;
 import com.kgat.entity.CommentReaction;
 import com.kgat.repository.CommentReactionRepository;
 import com.kgat.repository.CommentRepository;
-import com.kgat.vo.CommentData;
+import com.kgat.dto.CommentDTO;
 import com.kgat.vo.ReactionType;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,7 +67,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment updateComment(CommentData data) {
+    public Comment updateComment(CommentDTO data) {
         try {
             commentRepository.updateComment(data.getCommentText(), data.getCommentId());
 
@@ -94,7 +90,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment likeComment(CommentData data) {
+    public Comment likeComment(CommentDTO data) {
         // DB에서 reaction 찾아옴
         Optional<CommentReaction> reaction = commentReactionRepository.findByCommentIdAndUserId(data.getCommentId(), data.getUserId());
         Comment comment = commentRepository.findByCommentIdAndUserId(data.getCommentId(), data.getUserId());
@@ -138,7 +134,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment hateComment(CommentData data) {
+    public Comment hateComment(CommentDTO data) {
         // DB에서 reaction 찾아옴
         Optional<CommentReaction> reaction = commentReactionRepository.findByCommentIdAndUserId(data.getCommentId(), data.getUserId());
         Comment comment = commentRepository.findByCommentId(data.getCommentId());

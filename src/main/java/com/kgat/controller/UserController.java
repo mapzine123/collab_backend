@@ -1,9 +1,10 @@
 package com.kgat.controller;
 
+import com.kgat.dto.UserSignupDTO;
 import com.kgat.entity.User;
 import com.kgat.service.UserService;
-import com.kgat.vo.PasswordUpdateRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kgat.dto.PasswordUpdateDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +14,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.*;
 
-import com.kgat.vo.Constant;
+import com.kgat.vo.Constants;
 
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = userService.save(user);
+    public ResponseEntity<User> createUser(@RequestBody UserSignupDTO userDto) {
+        User savedUser = userService.save(userDto);
         if (savedUser == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -32,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateRequest request) {
+    public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateDTO request) {
         try {
             userService.updateUserPassword(request.getPassword(), request.getUserId());
             return ResponseEntity.ok().build();
@@ -46,7 +47,7 @@ public class UserController {
         try {
             String fileName = userId + "." + fileExtension;
 
-            Path filePath = Paths.get(Constant.PROFILE_PASS + fileName);
+            Path filePath = Paths.get(Constants.PROFILE_PASS + fileName);
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
@@ -65,7 +66,7 @@ public class UserController {
 
     @GetMapping("/profileImage/{fileName:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable("fileName") String fileName) throws IOException {
-        Path file = Paths.get(Constant.PROFILE_PASS).resolve(fileName).normalize();
+        Path file = Paths.get(Constants.PROFILE_PASS).resolve(fileName).normalize();
         Resource fileResource = new FileSystemResource(file.toFile());
 
         if(fileResource.exists()) {
