@@ -1,4 +1,4 @@
-package com.kgat.vo;
+package com.kgat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,19 +11,19 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubCommentData {
+public class SubCommentDTO {
     private long subCommentId;
     private long commentId;
     private String userId;
     private String subCommentText;
 
-    public SubCommentData(long commentId, String userId, String subCommentText) {
+    public SubCommentDTO(long commentId, String userId, String subCommentText) {
         this.commentId = commentId;
         this.userId = userId;
         this.subCommentText = subCommentText;
     }
 
-    public SubCommentData(long subCommentId, String userId) {
+    public SubCommentDTO(long subCommentId, String userId) {
         this.subCommentId = subCommentId;
         this.userId = userId;
     }

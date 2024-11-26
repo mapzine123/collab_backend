@@ -1,13 +1,9 @@
 package com.kgat.controller;
 
 import com.kgat.entity.Article;
-import com.kgat.entity.Comment;
 import com.kgat.service.ArticleService;
-import com.kgat.service.CommentService;
 import com.kgat.vo.ArticleData;
-import com.kgat.vo.CommentData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
