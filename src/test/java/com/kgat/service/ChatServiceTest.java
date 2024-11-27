@@ -1,12 +1,18 @@
 package com.kgat.service;
 
 import com.kgat.entity.ChatRoom;
+import com.kgat.entity.ChatRoomUser;
+import com.kgat.entity.User;
+import com.kgat.repository.ChatRoomRepository;
+import com.kgat.repository.ChatRoomUserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,8 +41,8 @@ class ChatServiceTest {
     @DisplayName("채팅방에 초대를 하면 채팅방이 생성되고 두 사용자가 참여자로 등록된다.")
     void createChatRoomByInvitationTest() {
         // given : 초대하는 사용자와 초대받는 사용자 설정
-        String inviter = "user1";
-        String invitee = "user2";
+        User inviter = new User("user1");
+        User invitee = new User("user2");
 
         // when : 채팅방 초대 요청
         ChatRoom chatRoom = chatService.intiveToChat(inviter, invitee);
@@ -49,7 +55,7 @@ class ChatServiceTest {
         assertEquals(2, chatRoom.getUsers().size(), "채팅방에 2명의 사용자가 있어야 함");
 
         List<ChatRoomUser> users = chatRoom.getUsers();
-        assertTrue(users.stream().anyMatch(u -> u.getUserId().equals(inviter)), "초대한 사용자가 채팅방 멤버로 존재해야함");
-        assertTrue(users.stream().anyMatch(u -> u.getUserId().equals(invitee)), "초대받은 사용자가 채팅방 멤버로 존재해야함");
+        assertTrue(users.stream().anyMatch(u -> u.getUser().equals(inviter)), "초대한 사용자가 채팅방 멤버로 존재해야함");
+        assertTrue(users.stream().anyMatch(u -> u.getUser().equals(invitee)), "초대받은 사용자가 채팅방 멤버로 존재해야함");
     }
 }
