@@ -13,8 +13,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ChatServiceTest {
@@ -57,5 +60,43 @@ class ChatServiceTest {
         List<ChatRoomUser> users = chatRoom.getUsers();
         assertTrue(users.stream().anyMatch(u -> u.getUser().equals(inviter)), "초대한 사용자가 채팅방 멤버로 존재해야함");
         assertTrue(users.stream().anyMatch(u -> u.getUser().equals(invitee)), "초대받은 사용자가 채팅방 멤버로 존재해야함");
+    }
+
+    @Test
+    @DisplayName("채팅방에서 메세지를 전송할 수 있다.")
+    void sendMessageToChatRoomTest() {
+        // given
+        User sender = new User("user1");
+        ChatRoom chatRoom = ChatRoom.create();
+        String content = "안녕하세요";
+
+        // mock 설정
+        /*
+        * Mockito 프레임워크를 사용한 Test Double 설정
+        * when() : ~할 때 라는 상황을 설정
+        * chatRoomRepository.findById(any())
+        *   chatRoomRepository의 findById 메서드가 호출될 때
+        *   any() : 어떤 인자가 들어와도 적용된다는 의미
+        * thenReturn(Optional.of(chatRoom))
+        *   그러면 Optional.of(chatRoom)을 반환
+        *   실제 DB 조회 대신 미리 준비한 chatRoom객체를 Optional로 감싸서 반환
+        * 
+        * 장점
+        * - DB에 의존하지 않아 테스트의 독립성 보장
+        * - 실제 DB 조회보다 빨라 테스트 속도 향상
+        * - DB 에러 상황 등 특정 상황 테스트 용이
+        */
+        when(chatRoomRepository.findById(any()))
+                .thenReturn(Optional.of(chatRoom));
+
+        // when
+        ChatMessage message = chatService.sendMessage(chatRoom.getId(), sender, content);
+
+        // then : 메시지가 정상적으로 저장되었는지 검증
+        assertNotNull(message, "메시지가 생성되어야함");
+        assertEquals(content, message.getContent(), "메시지 내용이 일치해야함");
+        assertEquals(sender, message.getSender(), "발신자가 일치해야함");
+        assertEquals(chatRoom, message.getChatRoom(), "채팅방이 일치해야함");
+        assertNotNull(message.getSentAt(), "전송 시간이 설정되어야함");
     }
 }
