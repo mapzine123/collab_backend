@@ -45,7 +45,10 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatMessage sendMessage(Long roomId, User sender, String content) {
+    public ChatMessage sendMessage(Long roomId, String senderId, String content) {
+        // 유저 조회
+        User sender = userRepository.findById(senderId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
         // 채팅방 조회
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatRoomNotFoundException("채팅방을 찾을 수 없습니다."));
 
