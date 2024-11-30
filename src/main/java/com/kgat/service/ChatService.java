@@ -5,6 +5,7 @@ import com.kgat.entity.ChatRoom;
 import com.kgat.entity.ChatRoomUser;
 import com.kgat.entity.User;
 import com.kgat.exception.ChatRoomNotFoundException;
+import com.kgat.exception.NotChatRoomParticipantException;
 import com.kgat.repository.ChatMessageRepository;
 import com.kgat.repository.ChatRoomRepository;
 import com.kgat.repository.ChatRoomUserRepository;
@@ -12,6 +13,8 @@ import com.kgat.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +48,15 @@ public class ChatService {
     public ChatMessage sendMessage(Long roomId, User sender, String content) {
         // 채팅방 조회
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatRoomNotFoundException("채팅방을 찾을 수 없습니다."));
+
+        // 채팅방 참여자인지 검증
+        boolean isParticipant = chatRoom.getUsers().stream()
+                .map(ChatRoomUser::getUser)
+                .anyMatch(user -> user.equals(sender));
+
+        if(!isParticipant) {
+            throw new NotChatRoomParticipantException("NotParticipants");
+        }
 
         // 메세지 생성
         ChatMessage message = ChatMessage.create(chatRoom, sender, content);

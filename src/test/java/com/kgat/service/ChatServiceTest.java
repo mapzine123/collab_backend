@@ -5,6 +5,7 @@ import com.kgat.entity.ChatRoom;
 import com.kgat.entity.ChatRoomUser;
 import com.kgat.entity.User;
 import com.kgat.exception.ChatRoomNotFoundException;
+import com.kgat.exception.NotChatRoomParticipantException;
 import com.kgat.repository.ChatMessageRepository;
 import com.kgat.repository.ChatRoomRepository;
 import com.kgat.repository.ChatRoomUserRepository;
