@@ -1,8 +1,11 @@
 package com.kgat.service;
 
+import com.kgat.entity.ChatMessage;
 import com.kgat.entity.ChatRoom;
 import com.kgat.entity.ChatRoomUser;
 import com.kgat.entity.User;
+import com.kgat.exception.ChatRoomNotFoundException;
+import com.kgat.repository.ChatMessageRepository;
 import com.kgat.repository.ChatRoomRepository;
 import com.kgat.repository.ChatRoomUserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +30,9 @@ class ChatServiceTest {
 
     @Mock
     private ChatRoomUserRepository chatRoomUserRepository;
+
+    @Mock
+    private ChatMessageRepository chatMessageRepository;
 
     @InjectMocks
     private ChatService chatService;
@@ -89,6 +95,9 @@ class ChatServiceTest {
         when(chatRoomRepository.findById(any()))
                 .thenReturn(Optional.of(chatRoom));
 
+        when(chatMessageRepository.save(any(ChatMessage.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
         // when
         ChatMessage message = chatService.sendMessage(chatRoom.getId(), sender, content);
 
@@ -98,5 +107,24 @@ class ChatServiceTest {
         assertEquals(sender, message.getSender(), "발신자가 일치해야함");
         assertEquals(chatRoom, message.getChatRoom(), "채팅방이 일치해야함");
         assertNotNull(message.getSentAt(), "전송 시간이 설정되어야함");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 채팅방에는 메시지를 보낼 수 없다.")
+    void cannotSendmessageToNonExistentRoomTest() {
+        // given : 존재하지 않는 채팅방 Id, 사용자, 메시지
+        User sender = new User("user1");
+        Long nonExistentRoomId = 999L;
+        String content = "테스트 메시지";
+
+        // mock 설정
+        when(chatRoomRepository.findById(nonExistentRoomId))
+                .thenReturn(Optional.empty());
+
+        // when & then : 존재하지 않는 채팅방에 메시지 전송 시도 시 예외 발생
+        assertThrows(ChatRoomNotFoundException.class, () -> {
+            chatService.sendMessage(nonExistentRoomId, sender, content);
+        });
+
     }
 }
