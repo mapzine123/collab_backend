@@ -9,6 +9,8 @@ import com.kgat.exception.NotChatRoomParticipantException;
 import com.kgat.repository.ChatMessageRepository;
 import com.kgat.repository.ChatRoomRepository;
 import com.kgat.repository.ChatRoomUserRepository;
+import com.kgat.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,17 +37,26 @@ class ChatServiceTest {
     @Mock
     private ChatMessageRepository chatMessageRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private ChatService chatService;
 
-    /*
-    * 채팅방 생성 테스트
-    * 시나리오 :
-    * 1. 사용자1이 사용자2를 초대
-    * 2. 새로운 채팅방 생성
-    * 3. 두 사용자가 채팅방 멤버로 등록됨
-    */
+    // 테스트에서 공통으로 사용할 객체들
+    private User testUser;
+    private ChatRoom testRoom;
 
+    @BeforeEach
+    void setUp() {
+        // 테스트에서 공통으로 사용할 객체 초기화
+        testUser = new User("user1");
+        testRoom = ChatRoom.create();
+
+        ChatRoomUser chatRoomUser = ChatRoomUser.create(testRoom, testUser);
+        testRoom.addUser(chatRoomUser);
+
+    }
 
     @Test
     @DisplayName("채팅방에 초대를 하면 채팅방이 생성되고 두 사용자가 참여자로 등록된다.")
@@ -72,9 +83,7 @@ class ChatServiceTest {
     @Test
     @DisplayName("채팅방에서 메세지를 전송할 수 있다.")
     void sendMessageToChatRoomTest() {
-        // given
-        User sender = new User("user1");
-        ChatRoom chatRoom = ChatRoom.create();
+        // given : testUser, testRoom
         String content = "안녕하세요";
 
         // mock 설정
@@ -87,26 +96,29 @@ class ChatServiceTest {
         * thenReturn(Optional.of(chatRoom))
         *   그러면 Optional.of(chatRoom)을 반환
         *   실제 DB 조회 대신 미리 준비한 chatRoom객체를 Optional로 감싸서 반환
-        * 
+        *
         * 장점
         * - DB에 의존하지 않아 테스트의 독립성 보장
         * - 실제 DB 조회보다 빨라 테스트 속도 향상
         * - DB 에러 상황 등 특정 상황 테스트 용이
         */
         when(chatRoomRepository.findById(any()))
-                .thenReturn(Optional.of(chatRoom));
+                .thenReturn(Optional.of(testRoom));
 
         when(chatMessageRepository.save(any(ChatMessage.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
+        when(userRepository.findById(testUser.getId()))
+                .thenReturn(Optional.of(testUser));
+
         // when
-        ChatMessage message = chatService.sendMessage(chatRoom.getId(), sender, content);
+        ChatMessage message = chatService.sendMessage(testRoom.getId(), testUser.getId(), content);
 
         // then : 메시지가 정상적으로 저장되었는지 검증
         assertNotNull(message, "메시지가 생성되어야함");
         assertEquals(content, message.getContent(), "메시지 내용이 일치해야함");
-        assertEquals(sender, message.getSender(), "발신자가 일치해야함");
-        assertEquals(chatRoom, message.getChatRoom(), "채팅방이 일치해야함");
+        assertEquals(testUser, message.getSender(), "발신자가 일치해야함");
+        assertEquals(testRoom, message.getChatRoom(), "채팅방이 일치해야함");
         assertNotNull(message.getSentAt(), "전송 시간이 설정되어야함");
     }
 
@@ -114,7 +126,7 @@ class ChatServiceTest {
     @DisplayName("존재하지 않는 채팅방에는 메시지를 보낼 수 없다.")
     void cannotSendmessageToNonExistentRoomTest() {
         // given : 존재하지 않는 채팅방 Id, 사용자, 메시지
-        User sender = new User("user1");
+        User testUser = new User("user1");
         Long nonExistentRoomId = 999L;
         String content = "테스트 메시지";
 
@@ -122,9 +134,12 @@ class ChatServiceTest {
         when(chatRoomRepository.findById(nonExistentRoomId))
                 .thenReturn(Optional.empty());
 
+        when(userRepository.findById(testUser.getId()))
+                .thenReturn(Optional.of(testUser));
+
         // when & then : 존재하지 않는 채팅방에 메시지 전송 시도 시 예외 발생
         assertThrows(ChatRoomNotFoundException.class, () -> {
-            chatService.sendMessage(nonExistentRoomId, sender, content);
+            chatService.sendMessage(nonExistentRoomId, testUser.getId(), content);
         });
     }
 
@@ -132,7 +147,7 @@ class ChatServiceTest {
     @DisplayName("채팅방 참여자만 메시지를 보낼 수 있다.")
     void onlyParticipantsCanSendMessageTest() {
         // given : 채팅방과 미참여 사용자 준비
-        User sender = new User("user3");
+        User testUser = new User("user3");
         ChatRoom chatRoom = ChatRoom.create();
         String content = "테스트 메시지";
 
@@ -140,9 +155,12 @@ class ChatServiceTest {
         when(chatRoomRepository.findById(any()))
                 .thenReturn(Optional.of(chatRoom));
 
+        when(userRepository.findById(testUser.getId()))
+                .thenReturn(Optional.of(testUser));
+
         // when & then : 미참여자가 메시지 전송 시 예외 발생
         assertThrows(NotChatRoomParticipantException.class, () -> {
-            chatService.sendMessage(chatRoom.getId(), sender, content);
+            chatService.sendMessage(chatRoom.getId(), testUser.getId(), content);
         });
     }
 }
