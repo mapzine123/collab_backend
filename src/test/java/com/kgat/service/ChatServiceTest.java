@@ -125,6 +125,23 @@ class ChatServiceTest {
         assertThrows(ChatRoomNotFoundException.class, () -> {
             chatService.sendMessage(nonExistentRoomId, sender, content);
         });
+    }
 
+    @Test
+    @DisplayName("채팅방 참여자만 메시지를 보낼 수 있다.")
+    void onlyParticipantsCanSendMessageTest() {
+        // given : 채팅방과 미참여 사용자 준비
+        User sender = new User("user3");
+        ChatRoom chatRoom = ChatRoom.create();
+        String content = "테스트 메시지";
+
+        // mock 설정
+        when(chatRoomRepository.findById(any()))
+                .thenReturn(Optional.of(chatRoom));
+
+        // when & then : 미참여자가 메시지 전송 시 예외 발생
+        assertThrows(NotChatRoomParticipantException.class, () -> {
+            chatService.sendMessage(chatRoom.getId(), sender, content);
+        });
     }
 }
