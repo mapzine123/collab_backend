@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.net.URI;
@@ -50,5 +51,27 @@ class ChatHandlerTest {
         assertThat(chatHandler.getSession("session1")).isEqualTo(session);
         // 2. 채팅방 세션에 저장되었는지 확인
         assertThat(chatHandler.getRoomSessions("uuid")).contains(session);
+    }
+    
+    @Test
+    @DisplayName("웹 소켓 연결 해제 시 세션이 제거된다")
+    void disconnectTest() throws Exception {
+        // given
+        // session 연결, 채팅방 매핑
+        WebSocketSession session = mock(WebSocketSession.class);
+        when(session.getId()).thenReturn("session1");
+        URI uri = new URI("/chat/uuid");
+        when(session.getUri()).thenReturn(uri);
+        
+        // 세션 연결
+        ChatHandler chatHandler = new ChatHandler();
+        chatHandler.afterConnectionEstablished(session);
+
+        // when
+        chatHandler.afterConnectionClosed(session, CloseStatus.NORMAL);
+
+        // then
+        assertThat(chatHandler.getSession("session1")).isNull();
+        assertThat(chatHandler.getRoomSessions("uuid")).doesNotContain(session);
     }
 }
