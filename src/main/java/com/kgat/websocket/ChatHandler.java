@@ -6,6 +6,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,21 @@ public class ChatHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        String roomId = getRoomId(session.getUri());
+
+        // 전체 세션에서 제거
         sessions.remove(session.getId());
+
+        // 채팅방 세션에서 제거
+        Set<WebSocketSession> roomSession = roomSessions.get(roomId);
+        if(roomSession != null) {
+            roomSession.remove(session);
+
+            // 방에 아무도 없으면 방 자체를 제거
+            if(roomSession.isEmpty()) {
+                roomSessions.remove(roomId);
+            }
+        }
     }
 
     // 테스트를 위한 메서드들
@@ -75,6 +90,22 @@ public class ChatHandler extends TextWebSocketHandler {
     }
 
     public Set<WebSocketSession> getRoomSessions(String roomdId) {
-        return roomSessions.get(roomdId);
+        /*
+            getOrDefault
+            - Map 인터페이스의 메서드
+            - 첫번째 파라미터 : 찾으려는 key 값
+            - 두번째 파라미터 : key가 없을 때 반환할 기본 값
+            
+            Collections.emptySet()
+            - immutable(불변)의 빈 Set을 반환
+            - 새로운 Set을 만드는 것 보다 메모리 효율적임
+            - 동일한 빈 Set 인스턴스를 재사용
+            
+            immutable : 한번 생성되면 그 내용을 변경할 수 없는 객체
+            - Thread-safe 함 : 여러 스레드가 동시에 접근해도 값이 변하지 않음
+            - Side Effect 방지 : 다른 코드에서 값을 변경할 수 없음
+            - 캐싱 가능 : 항상 같은 상태이므로 재사용 가능
+         */
+        return roomSessions.getOrDefault(roomdId, Collections.emptySet());
     }
 }
