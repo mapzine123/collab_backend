@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.net.URI;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -25,20 +28,27 @@ import static org.mockito.Mockito.*;
 class ChatHandlerTest {
 
     @Test
-    @DisplayName("웹 소켓이 연결되면 세션이 저장된다")
+    @DisplayName("웹 소켓이 연결되면 세션이 저장되고 채팅방에 매핑된다.")
     void connectionTest() throws Exception {
         // given
         WebSocketSession session = mock(WebSocketSession.class);
-        ChatHandler chatHandler = new ChatHandler();
 
         // mock 설정
         when(session.getId()).thenReturn("session1");
+
+        // 연결 요청 URI에 방 ID 포함
+        URI uri = new URI("/chat/uuid");
+        when(session.getUri()).thenReturn(uri);
+
+        ChatHandler chatHandler = new ChatHandler();
 
         // when
         chatHandler.afterConnectionEstablished(session);
 
         // then
+        // 1. 전체 세션에 저장되었는지 확인
         assertThat(chatHandler.getSession("session1")).isEqualTo(session);
-
+        // 2. 채팅방 세션에 저장되었는지 확인
+        assertThat(chatHandler.getRoomSessions("uuid")).contains(session);
     }
 }
