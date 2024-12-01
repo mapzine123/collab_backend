@@ -2,6 +2,7 @@ package com.kgat.websocket;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -35,6 +36,22 @@ public class ChatHandler extends TextWebSocketHandler {
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        // 발신자 방 ID 확인
+        String roomId = getRoomId(session.getUri());
+
+        // 해당 방의 모든 세션 가져오기
+        Set<WebSocketSession> sessions = roomSessions.getOrDefault(roomId, Collections.emptySet());
+
+        // 방의 모든 세션에게 메시지 전송
+        for(WebSocketSession ws : sessions) {
+            if(ws.isOpen()) {
+                ws.sendMessage(message);
+            }
+        }
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
