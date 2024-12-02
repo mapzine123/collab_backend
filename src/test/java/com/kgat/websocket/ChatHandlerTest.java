@@ -54,28 +54,24 @@ class ChatHandlerTest {
         WebSocketSession session = mock(WebSocketSession.class);
         when(session.getId()).thenReturn(sessionId);
         when(session.getUri()).thenReturn(new URI("/chat/" + ROOM_ID + "?token=" + token));
-        when(session.isOpen()).thenReturn(true);
 
         return session;
+    }
+
+    // JWT mock 설정 헬퍼 메서드
+    private void setUpJwtMock(String token, String userId) {
+        when(jwtTokenProvider.validateToken(token)).thenReturn(true);
+        when(jwtTokenProvider.getUserIdFromToken(token)).thenReturn(userId);
     }
 
     @Test
     @DisplayName("웹 소켓이 연결되면 세션이 저장되고 채팅방에 매핑된다.")
     void connectionTest() throws Exception {
         // given
-        WebSocketSession session = mock(WebSocketSession.class);
+        WebSocketSession session = createMockSession("session1", "validToken");
 
-        // mock 설정
-        when(session.getId()).thenReturn("session1");
-
-        // 연결 요청 URI에 방 ID 포함
-        URI uri = new URI("/chat/uuid/?token=validToken");
-        when(session.getUri()).thenReturn(uri);
-
-        when(jwtTokenProvider.validateToken("validToken")).thenReturn(true);
-        when(jwtTokenProvider.getUserIdFromToken("validToken")).thenReturn("user1");
-        ChatHandler chatHandler = new ChatHandler(jwtTokenProvider);
-        String roomId = chatHandler.getRoomId(uri);
+        // JWT mock 설정
+        setUpJwtMock("validToken", "user1");
 
         // when
         chatHandler.afterConnectionEstablished(session);
@@ -83,7 +79,7 @@ class ChatHandlerTest {
         // 1. 전체 세션에 저장되었는지 확인
         assertThat(chatHandler.getSession("session1")).isEqualTo(session);
         // 2. 채팅방 세션에 저장되었는지 확인
-        assertThat(chatHandler.getRoomSessions(roomId)).contains(session);
+        assertThat(chatHandler.getRoomSessions(ROOM_ID)).contains(session);
     }
     
     @Test
@@ -91,26 +87,19 @@ class ChatHandlerTest {
     void disconnectTest() throws Exception {
         // given
         // session 연결, 채팅방 매핑
-        WebSocketSession session = mock(WebSocketSession.class);
-        when(session.getId()).thenReturn("session1");
-        URI uri = new URI("/chat/uuid/?token=validToken");
-        when(session.getUri()).thenReturn(uri);
-        
-        // 세션 연결
-        ChatHandler chatHandler = new ChatHandler(jwtTokenProvider);
-        when(jwtTokenProvider.validateToken("validToken")).thenReturn(true);
-        when(jwtTokenProvider.getUserIdFromToken("validToken")).thenReturn("user1");
+        WebSocketSession session = createMockSession("session1", "validToken");
+
+        // JWT mock 설정
+        setUpJwtMock("validToken", "user1");
 
         chatHandler.afterConnectionEstablished(session);
-
-        String roomId = chatHandler.getRoomId(uri);
 
         // when
         chatHandler.afterConnectionClosed(session, CloseStatus.NORMAL);
 
         // then
         assertThat(chatHandler.getSession("session1")).isNull();
-        assertThat(chatHandler.getRoomSessions(roomId)).doesNotContain(session);
+        assertThat(chatHandler.getRoomSessions(ROOM_ID)).doesNotContain(session);
     }
 
     @Test
@@ -120,7 +109,11 @@ class ChatHandlerTest {
         // 채팅방 "uuid"에 있는 두 개의 세션 설정
         WebSocketSession sender = createMockSession("session1", SENDER_TOKEN);
         WebSocketSession receiver = createMockSession("session2", RECEIVER_TOKEN);
-        
+
+        // isOpen mock 설정
+        when(sender.isOpen()).thenReturn(true);
+        when(receiver.isOpen()).thenReturn(true);
+
         // JWT 설정
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getUserIdFromToken(SENDER_TOKEN)).thenReturn("sender");
