@@ -1,5 +1,9 @@
 package com.kgat.websocket;
 
+import com.kgat.exception.InvalidTokenException;
+import com.kgat.security.JwtTokenProvider;
+import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -36,6 +40,15 @@ public class ChatHandler extends TextWebSocketHandler {
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
+    // SessionId -> UserId 매핑
+    private final Map<String, String> sessionUserMapping = new ConcurrentHashMap<>();
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    public ChatHandler(final JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -57,6 +70,16 @@ public class ChatHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String sessionId = session.getId();
         String roomId = getRoomId(session.getUri());
+        String token = extractToken(session.getUri());
+
+        // 유효한 토큰이 아닐 시 예외 발생
+        if(!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidTokenException("Invalid JWT token");
+        }
+
+        // 사용자 ID 저장
+        String userId = jwtTokenProvider.getUserIdFromToken(token);
+        sessionUserMapping.put(sessionId, userId);
 
         // 전체 세션에 저장
         sessions.put(sessionId, session);
@@ -76,9 +99,30 @@ public class ChatHandler extends TextWebSocketHandler {
         roomSessions.computeIfAbsent(roomId, k -> new HashSet<>()).add(session);
     }
 
-    private String getRoomId(URI uri) {
+    // 토큰 추출
+    public String extractToken(URI uri) {
+        String query = uri.getQuery();
+
+        if(query != null) {
+            String[] params = query.split("&");
+            for(String param : params) {
+                String[] keyValue = param.split("=");
+                if(keyValue.length == 2 && "token".equals(keyValue[0])) {
+                    return keyValue[1];
+                }
+            }
+        }
+        throw new InvalidTokenException("Invalid token");
+    }
+
+    String getRoomId(URI uri) {
         String path = uri.getPath();
-        return path.substring(path.lastIndexOf('/') + 1);
+        String roomId = path.substring(path.lastIndexOf('/') + 1);
+
+        // 쿼리 파라미터 제거
+        int queryIndex = roomId.indexOf('?');
+
+        return queryIndex > -1 ? roomId.substring(0, queryIndex) : roomId;
     }
 
 
