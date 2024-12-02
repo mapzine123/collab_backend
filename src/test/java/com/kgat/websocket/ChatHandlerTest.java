@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /*
@@ -126,5 +127,23 @@ class ChatHandlerTest {
         verify(sender).sendMessage(any(TextMessage.class));
         verify(receiver).sendMessage(any(TextMessage.class));
 
+    }
+
+    @Test
+    @DisplayName("JWT 토큰이 유효하지 않으면 웹소켓 연결이 거부된다")
+    void connectWithInvalidTokenTest() throws Exception {
+        // given
+        WebSocketSession session = mock(WebSocketSession.class);
+
+        // 잘못된 토큰이 포함됨
+        URI uri = new URI("/chat/uuid/token=invalid_token");
+        when(session.getUri()).thenReturn(uri);
+
+        ChatHandler chatHandler = new ChatHandler();
+
+        // when & then
+        assertThrows(InvalidTokenException.class, () -> {
+            chatHandler.afterConnectionEstablished(session);
+        })
     }
 }
