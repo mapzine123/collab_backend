@@ -41,9 +41,17 @@ public class JwtTokenProvider {
     }
 
     // 토큰 유효성 검증
-    public boolean validateToken(String token, User user) {
-        String userId = getUserIdFromToken(token);
-        return (userId.equals(user.getId()) && !isTokenExpired(token));
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+
+            return !isTokenExpired(token);
+        } catch(Exception e) {
+            return false;
+        }
     }
 
     // 토큰 만료 여부 확인
