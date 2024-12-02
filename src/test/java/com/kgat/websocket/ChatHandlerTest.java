@@ -1,5 +1,6 @@
 package com.kgat.websocket;
 
+import com.kgat.exception.InvalidTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -144,6 +145,6 @@ class ChatHandlerTest {
         // when & then
         assertThrows(InvalidTokenException.class, () -> {
             chatHandler.afterConnectionEstablished(session);
-        })
+        });
     }
 }
