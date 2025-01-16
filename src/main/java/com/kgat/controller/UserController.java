@@ -35,44 +35,11 @@ public class UserController {
     @PostMapping("/password")
     public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateDTO request) {
         try {
-            userService.updateUserPassword(request.getPassword(), request.getUserId());
+            userService.updateUserPassword(request.getUserId(), request.getPassword());
             return ResponseEntity.ok().build();
         } catch(Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/image")
-    public ResponseEntity<String> uploadProfileImage(@RequestParam("userId") String userId, @RequestParam("file") MultipartFile file, @RequestParam("fileExtension") String fileExtension) throws IOException {
-        try {
-            String fileName = userId + "." + fileExtension;
-
-            Path filePath = Paths.get(Constants.PROFILE_PASS + fileName);
-
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            String fileUrl = "http://localhost:8080/api/users/profileImage/" + fileName;
-
-            User user = new User(userId, fileUrl);
-
-            // 파일 업로드 및 저장
-            userService.saveUserProfileImage(user);
-
-            return ResponseEntity.ok(fileUrl);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Filed to upload file.");
-        }
-    }
-
-    @GetMapping("/profileImage/{fileName:.+}")
-    public ResponseEntity<Resource> serveFile(@PathVariable("fileName") String fileName) throws IOException {
-        Path file = Paths.get(Constants.PROFILE_PASS).resolve(fileName).normalize();
-        Resource fileResource = new FileSystemResource(file.toFile());
-
-        if(fileResource.exists()) {
-            return ResponseEntity.ok().body(fileResource);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

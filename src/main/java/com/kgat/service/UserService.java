@@ -1,22 +1,25 @@
 package com.kgat.service;
 
+import com.kgat.dto.UserResponseDTO;
 import com.kgat.dto.UserSignupDTO;
 import com.kgat.entity.User;
 import com.kgat.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public User save(UserSignupDTO userDto) {
@@ -39,8 +42,24 @@ public class UserService {
         }
     }
 
-    public void updateUserPassword(String password, String userId) {
-        userRepository.updatePassword(password, userId);
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getDepartment()
+                )).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateUserPassword(String userId, String password) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 비밀번호 암호화 후 업데이트
+        String encodedPassword = passwordEncoder.encode(password);
+        userRepository.updatePassword(userId, encodedPassword);
+
     }
 
     public boolean authenticateUser(String userId, String password) {
@@ -50,5 +69,12 @@ public class UserService {
         }
 
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    // 사용자 정보 조회 메서드
+    @Transactional(readOnly = true)
+    public User findById(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 }
