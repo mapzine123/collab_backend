@@ -18,22 +18,25 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     public User save(UserSignupDTO userDto) {
+        // 중복 ID 검사 수행
+        if(userRepository.existsById(userDto.getId())) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
+
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         User user = User.builder()
                         .id(userDto.getId())
                         .password(encodedPassword)
+                        .name(userDto.getName())
+                        .department(userDto.getDepartment())
                         .build();
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            return null;
+            throw new IllegalStateException("사용자 저장 중 오류가 발생했습니다.");
         }
-    }
-
-    public void saveUserProfileImage(User user) throws IOException {
-        // 프로필 이미지 경로 DB에 업데이트
-        userRepository.updateProfileImagePath(user.getProfileImagePath(), user.getId());
     }
 
     public void updateUserPassword(String password, String userId) {
