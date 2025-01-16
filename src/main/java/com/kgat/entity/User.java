@@ -13,36 +13,23 @@ import java.util.Objects;
 @Builder
 @Table(name="users")
 public class User {
-
     public User(String id) {
         this.id = id;
     }
 
-    public User(String id, String profileImagePath) {
-        this.id = id;
-        this.profileImagePath = profileImagePath;
-    }
-
     @Id
     @Column(nullable = false)
-    private String id;
+    private String id; // 로그인용 아이디
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
-    private String profileImagePath;
+    @Column(nullable = false)
+    private String name; // 실명
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", password='" + password + '\'' +
-                ", profileImagePath='" + profileImagePath + '\'' +
-                '}';
-    }
-
-
+    @Column(nullable = false)
+    private String department; // 부서명
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,6 +40,15 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, password);
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                '}';
     }
 }
