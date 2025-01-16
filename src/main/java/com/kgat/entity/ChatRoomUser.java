@@ -20,7 +20,6 @@ public class ChatRoomUser {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime lastReadAt; // 마지막으로 읽은 시간
     private LocalDateTime joinedAt; // 채팅방 참여 시간
 
     private boolean active = true; // 채팅방 참여 여부
@@ -30,7 +29,6 @@ public class ChatRoomUser {
         ChatRoomUser chatRoomUser = new ChatRoomUser();
         chatRoomUser.chatRoom = chatRoom;
         chatRoomUser.user = user;
-        chatRoomUser.lastReadAt = LocalDateTime.now();
         chatRoomUser.joinedAt = LocalDateTime.now();
         return chatRoomUser;
     }
