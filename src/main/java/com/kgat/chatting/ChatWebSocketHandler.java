@@ -94,24 +94,24 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 사용자가 채팅방에 입장할 때의 처리
     private void handleEnterMessage(WebSocketSession session, com.kgat.dto.ChatMessage message, ChatRoom room) throws IOException {
         // 세션 정보 저장
-        roomSessions.computeIfAbsent(room.getRoomId(), k -> new CopyOnWriteArraySet<>()).add(session);
-        sessionRoomMap.put(session, room.getRoomId());
+        roomSessions.computeIfAbsent(room.getId(), k -> new CopyOnWriteArraySet<>()).add(session);
+        sessionRoomMap.put(session, room.getId());
         sessionUserMap.put(session, message.getSender());
 
         // 입장 메시지 전송
         message.setMessage(message.getSender() + " 님이 입장하셨습니다.");
-        sendMessageToRoom(room.getRoomId(), message);
+        sendMessageToRoom(room.getId(), message);
     }
 
     // 일반 대화 메시지 처리
     private void handleTalkMessage(ChatMessage message, ChatRoom room) throws IOException {
-        sendMessageToRoom(room.getRoomId(), message);
+        sendMessageToRoom(room.getId(), message);
     }
 
     // 사용자가 채팅방을 나갈 때의 처리
     private void handleLeaveMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
         // 세션 정보 제거
-        Set<WebSocketSession> sessions = roomSessions.get(room.getRoomId());
+        Set<WebSocketSession> sessions = roomSessions.get(room.getId());
         if(sessions != null) {
             sessions.remove(session);
         }
@@ -120,7 +120,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         // 퇴장 메시지 전송
         message.setMessage(message.getSender() + " 님이 퇴장하셨습니다.");
-        sendMessageToRoom(room.getRoomId(), message);
+        sendMessageToRoom(room.getId(), message);
     }
 
     // 에러 메시지 처리
