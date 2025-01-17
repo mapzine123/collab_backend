@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-    Optional<ChatRoom> findByRoomId(String roomId);
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
+    Optional<ChatRoom> findById(String roomId);
 
     @Query("SELECT DISTINCT cr FROM ChatRoom cr " +
             "JOIN cr.users cru " +

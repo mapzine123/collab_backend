@@ -26,31 +26,20 @@ public class ChatService {
     private final UserRepository userRepository;
 
 
-    public ChatRoom intiveToChat(User inviter, User invitee) {
-        // 유효성 검증
-        if(inviter.equals(invitee)) {
-            throw new IllegalArgumentException(("자기 자신을 초대할 수 없습니다."));
-        }
-
+    public ChatRoom intiveToChat(User inviter, User[] invitees, String channelName) {
         // 채팅방 생성 및 사용자 추가
-        ChatRoom chatRoom = ChatRoom.create();
 
-        ChatRoomUser inviterUser = ChatRoomUser.create(chatRoom, inviter);
-        ChatRoomUser inviteeUser = ChatRoomUser.create(chatRoom, invitee);
 
-        chatRoom.addUser(inviterUser);
-        chatRoom.addUser(inviteeUser);
-
-        return chatRoom;
+        return null;
     }
 
     @Transactional
-    public ChatMessage sendMessage(Long roomId, String senderId, String content) {
+    public ChatMessage sendMessage(String id, String senderId, String content) {
         // 유저 조회
         User sender = userRepository.findById(senderId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 채팅방 조회
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new ChatRoomNotFoundException("채팅방을 찾을 수 없습니다."));
+        ChatRoom chatRoom = chatRoomRepository.findById(id).orElseThrow(() -> new ChatRoomNotFoundException("채팅방을 찾을 수 없습니다."));
 
         // 채팅방 참여자인지 검증
         boolean isParticipant = chatRoom.getUsers().stream()
