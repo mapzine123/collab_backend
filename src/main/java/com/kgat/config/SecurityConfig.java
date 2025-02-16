@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // 로그인
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // 회원가입
                         .requestMatchers(HttpMethod.GET, "/api/articles").permitAll() // 인증 필요없는 GET 매핑
+                        .requestMatchers("/ws/chat/**").permitAll()
                         .anyRequest().authenticated() // 그 외 api는 인증 필요
                 )
                 // JWT 인증 필터 추가

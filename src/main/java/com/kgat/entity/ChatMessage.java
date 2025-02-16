@@ -1,5 +1,6 @@
 package com.kgat.entity;
 
+import com.kgat.dto.ChatMessageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,7 +25,9 @@ public class ChatMessage {
     private User sender;
 
     private String content;
-    private LocalDateTime sentAt;
+    private LocalDateTime createAt;
+
+    private ChatMessageDTO.MessageType messageType;
 
     // 생성 메서드
     public static ChatMessage create(ChatRoom chatRoom, User sender, String content) {
@@ -32,7 +35,7 @@ public class ChatMessage {
         message.chatRoom = chatRoom;
         message.sender = sender;
         message.content = content;
-        message.sentAt = LocalDateTime.now();
+        message.createAt = LocalDateTime.now();
         return message;
     }
 }
