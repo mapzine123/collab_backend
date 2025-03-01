@@ -17,6 +17,11 @@ public class User {
         this.id = id;
     }
 
+    public User(String id, String password) {
+        this.id = id;
+        this.password = password;
+    }
+
     @Id
     @Column(nullable = false)
     private String id; // 로그인용 아이디
@@ -51,4 +56,6 @@ public class User {
                 ", department='" + department + '\'' +
                 '}';
     }
+
+
 }
