@@ -1,43 +1,65 @@
 package com.kgat.service;
 
+import com.kgat.dto.UserResponseDTO;
 import com.kgat.dto.UserSignupDTO;
 import com.kgat.entity.User;
 import com.kgat.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     public User save(UserSignupDTO userDto) {
+        // 중복 ID 검사 수행
+        if(userRepository.existsById(userDto.getId())) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
+
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         User user = User.builder()
                         .id(userDto.getId())
                         .password(encodedPassword)
+                        .name(userDto.getName())
+                        .department(userDto.getDepartment())
                         .build();
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            return null;
+            throw new IllegalStateException("사용자 저장 중 오류가 발생했습니다.");
         }
     }
 
-    public void saveUserProfileImage(User user) throws IOException {
-        // 프로필 이미지 경로 DB에 업데이트
-        userRepository.updateProfileImagePath(user.getProfileImagePath(), user.getId());
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getDepartment()
+                )).collect(Collectors.toList());
     }
 
-    public void updateUserPassword(String password, String userId) {
-        userRepository.updatePassword(password, userId);
+    @Transactional
+    public void updateUserPassword(String userId, String password) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 비밀번호 암호화 후 업데이트
+        String encodedPassword = passwordEncoder.encode(password);
+        userRepository.updatePassword(userId, encodedPassword);
+
     }
 
     public boolean authenticateUser(String userId, String password) {
@@ -47,5 +69,12 @@ public class UserService {
         }
 
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    // 사용자 정보 조회 메서드
+    @Transactional(readOnly = true)
+    public User findById(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 }

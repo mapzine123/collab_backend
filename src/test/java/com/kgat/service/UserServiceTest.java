@@ -1,5 +1,6 @@
 package com.kgat.service;
 
+import com.kgat.dto.UserSignupDTO;
 import com.kgat.entity.User;
 import com.kgat.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +28,7 @@ class UserServiceTest {
     @Test
     @DisplayName("회원가입 성공")
     void saveSuccessed() {
-        User user = new User("user1", "1234", "abe");
-
-        when(userRepository.save(user)).thenReturn(user);
+        UserSignupDTO user = new UserSignupDTO("user1", "1234");
 
         User saveUser = userService.save(user);
 
@@ -41,10 +40,7 @@ class UserServiceTest {
     @Test
     @DisplayName("회원가입 실패")
     void saveFailed() {
-        User user = new User("user1", "1234", "abe");
-
-        when(userRepository.save(user)).thenThrow(new DataIntegrityViolationException("Duplicate entry"));
-
+        UserSignupDTO user = new UserSignupDTO("user1", "1234");
         User saveUser = userService.save(user);
 
         assertThat(saveUser).isNull();
