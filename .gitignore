@@ -90,7 +90,6 @@ release.properties.asc
 # 환경 설정 파일
 *.properties
 *.yml
-*.yaml
 
 # 기타
 *.swp
