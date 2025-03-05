@@ -24,7 +24,8 @@ public class Article extends ReactionContent {
     @Column(nullable = false)
     private String articleTitle;
 
-    @Column(nullable = true)
+    @Lob
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String articleContent;
 
     @Column(nullable = false)
