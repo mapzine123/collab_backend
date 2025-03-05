@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,7 @@ public class ArticleService {
     }
 
     public Page<Article> getArticles(int page, String search, String userId) {
-        Pageable pageable = PageRequest.of(page, 10);
-
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Article> articlePage;
 
         // 검색어 유무에 따라 적절한 메서드 호출
