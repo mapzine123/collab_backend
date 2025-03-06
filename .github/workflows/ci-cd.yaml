@@ -38,6 +38,7 @@ jobs:
 
       - name: Build and push Docker image
         env:
+          ALLOWED_ORIGINS: http://localhost:3000,http://13.125.207.143:30080
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker build -t $ECR_REGISTRY/kgat-backend:${{ github.sha }} -t $ECR_REGISTRY/kgat-backend:latest .
