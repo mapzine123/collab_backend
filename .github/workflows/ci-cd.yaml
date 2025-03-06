@@ -53,6 +53,6 @@ jobs:
           script: |
             cd ~/deployment
             AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-            sed -i "s|image: .*kgat-backend:.*|image: ${{ steps.login-ecr.outputs.registry }}/kgat-backend:${{ github.sha }}|" backend-deployment.yaml
+            sed -i "s|image: .*kgat-backend:.*|image: ${{ steps.login-ecr.outputs.registry }}/kgat-backend:${{ github.sha }}|" backend/kgat-backend.yaml
             kubectl apply -f backend-deployment.yaml
             kubectl rollout restart deployment/kgat-backend
