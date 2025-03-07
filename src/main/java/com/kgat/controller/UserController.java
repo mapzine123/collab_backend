@@ -1,5 +1,6 @@
 package com.kgat.controller;
 
+import com.kgat.dto.ProfileImageRequestDTO;
 import com.kgat.dto.UserResponseDTO;
 import com.kgat.dto.UserSignupDTO;
 import com.kgat.entity.User;
@@ -9,7 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,4 +71,26 @@ public class UserController {
         }
     }
 
+    @PostMapping("/image")
+    public ResponseEntity<String> updateProfileImage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ProfileImageRequestDTO request) {
+        try {
+            log.info("S3 프로필 이미지 업데이트 요청: {}", request.getUserId());
+            userService.updateUserProfileImage(request.getUserId(), request.getImagePath(), request.getImageUrl());
+            return ResponseEntity.ok("프로필 이미지가 성공적으로 업데이트 되었습니다.");
+        } catch(Exception e) {
+            log.error("프로필 이미지 업데이트 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 이미지 업데이트 중 오류가 발생했습니다.");
+        }
+    }
+
+    // 프로필 정보 조회 엔드포인트
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("userId") String userId) {
+        try {
+            return ResponseEntity.ok(userService.getUserProfile(userDetails.getUsername()));
+        } catch(Exception e) {
+            log.error("사용자 프로필 조회 중 오류 발생");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용자 프로필 조회 중 오류 발생");
+        }
+    }
 }
