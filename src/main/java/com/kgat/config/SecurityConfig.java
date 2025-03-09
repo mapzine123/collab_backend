@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // 로그인
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // 회원가입
+                        .requestMatchers("/api/users/profile").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/articles").permitAll() // 인증 필요없는 GET 매핑
                         .requestMatchers("/api/articles/**").permitAll() // articles 관련 API는 인증 없이 접근 가능
                         .requestMatchers("/api/comments/**").permitAll() // comments 관련 API는 인증 없이 접근 가능

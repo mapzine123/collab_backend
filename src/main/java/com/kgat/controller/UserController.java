@@ -85,9 +85,9 @@ public class UserController {
 
     // 프로필 정보 조회 엔드포인트
     @GetMapping("/profile")
-    public ResponseEntity<?> getUserProfile(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("userId") String userId) {
+    public ResponseEntity<?> getUserProfile(@RequestParam("userId") String userId) {
         try {
-            return ResponseEntity.ok(userService.getUserProfile(userDetails.getUsername()));
+            return ResponseEntity.ok(userService.getUserProfile(userId));
         } catch(Exception e) {
             log.error("사용자 프로필 조회 중 오류 발생");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용자 프로필 조회 중 오류 발생");
