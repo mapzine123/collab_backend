@@ -106,7 +106,7 @@ public class ArticleService {
             }
 
             if(!article.getArticleContent().equals(prevArticle.getArticleContent())) {
-                prevArticle.setArticleContent(prevArticle.getArticleContent());
+                prevArticle.setArticleContent(article.getArticleContent());
                 isUpdated = true;
             }
             if(isUpdated) {
