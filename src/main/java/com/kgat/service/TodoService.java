@@ -5,6 +5,7 @@ import com.kgat.dto.TodoDTO;
 import com.kgat.entity.Todo;
 import com.kgat.entity.User;
 import com.kgat.repository.TodoRepository;
+import com.kgat.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
     public List<TodoDTO> findAllTodos(String userId) {
         List<Todo> todos = todoRepository.findAllByUser(userId);
@@ -39,8 +41,9 @@ public class TodoService {
         todoRepository.deleteAll(todos);
     }
 
-    public TodoDTO addTodo(TodoDTO todoDTO, String user) {
-        Todo todo = convertToEntity(todoDTO, new User(user));
+    public TodoDTO addTodo(TodoDTO todoDTO, String userId) {
+        User user = userRepository.findById(userId).get();
+        Todo todo = convertToEntity(todoDTO, user);
         return convertToDTO(todoRepository.save(todo));
     }
 
@@ -62,6 +65,8 @@ public class TodoService {
         return TodoDTO.builder()
                 .id(todo.getId())
                 .content(todo.getContent())
+                .department((todo.getUser().getDepartment()))
+                .name(todo.getUser().getName())
                 .completed(todo.isCompleted())
                 .userId(todo.getUser().getId())
                 .created(todo.getCreated())

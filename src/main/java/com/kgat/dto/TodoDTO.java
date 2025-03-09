@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 @Data
 public class TodoDTO {
     private Long id;
+    private String name;
     private String content;
+    private String department;
+
     private boolean completed;
     private String userId;  // User 엔티티 대신 userId만
     private LocalDateTime created;

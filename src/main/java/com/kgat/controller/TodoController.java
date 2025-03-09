@@ -36,7 +36,7 @@ public class TodoController {
     public ResponseEntity<TodoDTO> addTodo(@AuthenticationPrincipal UserDetails userDetails, @RequestBody TodoDTO todoDTO) {
         String userId = userDetails.getUsername();
         TodoDTO savedTodo = todoService.addTodo(todoDTO, userId);
-
+        System.out.println(savedTodo);
         return ResponseEntity.ok(savedTodo);
     }
 
