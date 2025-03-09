@@ -20,6 +20,13 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
+    public List<TodoDTO> findAllTodos() {
+        List<Todo> todos = (List<Todo>) todoRepository.findAll();
+        return todos.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<TodoDTO> findAllTodos(String userId) {
         List<Todo> todos = todoRepository.findAllByUser(userId);
         return todos.stream()

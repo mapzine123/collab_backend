@@ -22,7 +22,7 @@ public class TodoController {
     // 해당 User의 전체 to-do 반환
     @GetMapping
     public ResponseEntity<List<TodoDTO>> getTodos(@AuthenticationPrincipal UserDetails userDetails) {
-        List<TodoDTO> todos = todoService.findAllTodos(userDetails.getUsername());
+        List<TodoDTO> todos = todoService.findAllTodos();
 
         if(todos.isEmpty()) {
             return ResponseEntity.ok(new ArrayList<>());  // 빈 배열 반환
