@@ -13,7 +13,6 @@ import com.kgat.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
 
@@ -56,5 +55,9 @@ public class ChatService {
 
         // 메시지 저장 및 반환
         return chatMessageRepository.save(message);
+    }
+
+    public List<User> getChatRoomUsers(String chatRoomId) {
+        return chatRoomUserRepository.findByChatRoomId(chatRoomId);
     }
 }

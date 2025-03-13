@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Table(indexes = @Index(name = "idx_chat_room", columnList = "chatRoom"))
 public class ChatRoomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

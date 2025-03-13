@@ -57,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/articles/**").permitAll() // articles 관련 API는 인증 없이 접근 가능
                         .requestMatchers("/api/comments/**").permitAll() // comments 관련 API는 인증 없이 접근 가능
                         .requestMatchers("/ws/chat/**").permitAll()
+                        .requestMatchers("/api/chats/**").permitAll()
                         .anyRequest().authenticated() // 그 외 api는 인증 필요
                 )
                 // JWT 인증 필터 추가
