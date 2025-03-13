@@ -2,7 +2,7 @@ package com.kgat.websocket;
 
 import com.kgat.exception.InvalidTokenException;
 import com.kgat.security.JwtTokenProvider;
-import lombok.NonNull;
+import com.kgat.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
     WebSocketSession
     - 실제 클라이언트와의 연결을 추상화한 객체
     - 각 클라이언트 연결마다 하나의 WebSocketSession 생성, 이를 통해 클라이언트와 통신
- */
+*/
 
 @Component
 public class ChatHandler extends TextWebSocketHandler {
@@ -46,13 +46,13 @@ public class ChatHandler extends TextWebSocketHandler {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public ChatHandler(final JwtTokenProvider jwtTokenProvider) {
+    public ChatHandler(final JwtTokenProvider jwtTokenProvider, ChatService chatService) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        // 발신자 방 ID 확인
+        // 사용자 정보 조회
         String roomId = getRoomId(session.getUri());
 
         // 해당 방의 모든 세션 가져오기

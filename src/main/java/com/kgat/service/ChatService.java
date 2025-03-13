@@ -13,6 +13,7 @@ import com.kgat.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
 
@@ -34,12 +35,12 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatMessage sendMessage(String id, String senderId, String content) {
+    public ChatMessage sendMessage(String chatRoomId, String senderId, String content) {
         // 유저 조회
         User sender = userRepository.findById(senderId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 채팅방 조회
-        ChatRoom chatRoom = chatRoomRepository.findById(id).orElseThrow(() -> new ChatRoomNotFoundException("채팅방을 찾을 수 없습니다."));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new ChatRoomNotFoundException("채팅방을 찾을 수 없습니다."));
 
         // 채팅방 참여자인지 검증
         boolean isParticipant = chatRoom.getUsers().stream()

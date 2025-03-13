@@ -62,7 +62,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        log.info("반은 메시지: {}", payload);
+        log.info("받은 메시지: {}", payload);
         try {
             // JSON 문자열을 ChatMessage 객체로 변환
             ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
@@ -113,13 +113,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 사용자가 채팅방에 입장할 때의 처리
     private void handleEnterMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
         // JWT 토큰엣어 사용자 ID 추출
-        String token = message.getSender();
-        String userId = jwtTokenProvider.getUserIdFromToken(token);
-
+        String userId = message.getSenderId();
+        System.out.println(userId);
         // 세션 정보 저장
         roomSessions.computeIfAbsent(room.getId(), k -> new CopyOnWriteArraySet<>()).add(session);
         sessionRoomMap.put(session, room.getId());
-        sessionUserMap.put(session, message.getSender());
+        sessionUserMap.put(session, message.getSenderId());
 
         // 사용자 정보 조회
         User user = userService.findById(userId);
@@ -135,13 +134,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private void handleTalkMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
         try {
             // 사용자 정보 조회
-            String token = sessionTokenMap.get(session);
-            String userId = jwtTokenProvider.getUserIdFromToken(token);
+            String userId = message.getSenderId();
             User user = userService.findById(userId);
 
             message.setSenderName(user.getName());
             message.setSenderDepartment(user.getDepartment());
-            message.setSender(token);
+            message.setSenderId(userId);
+
+            chatService.sendMessage(room.getId(), userId, message.getContent());
 
             sendMessageToRoom(room.getId(), message);
         } catch(Exception e) {
@@ -153,7 +153,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     // 사용자가 채팅방을 나갈 때의 처리
     private void handleLeaveMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
         // JWT 토큰엣어 사용자 ID 추출
-        String token = message.getSender();
+        String token = message.getSenderId();
         String userId = jwtTokenProvider.getUserIdFromToken(token);
 
         // 세션 정보 제거
