@@ -22,6 +22,8 @@ public class MessageService {
                         .roomId(message.getId())
                         .content(message.getContent())
                         .senderId(message.getSender().getId())
+                        .senderName(message.getSender().getName())
+                        .senderDepartment(message.getSender().getDepartment())
                         .createAt(message.getCreateAt())
                         .type(message.getMessageType())
                         .build())

@@ -1,5 +1,6 @@
 package com.kgat.service;
 
+import com.kgat.dto.ChatUserRequestDTO;
 import com.kgat.entity.ChatRoom;
 import com.kgat.entity.ChatRoomUser;
 import com.kgat.entity.User;
@@ -67,4 +68,17 @@ public class ChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("Room not found: " + roomId));
     }
 
+    @Transactional
+    public void addUsers(ChatUserRequestDTO data) {
+        ChatRoom chatRoom = chatRoomRepository.findById(data.getRoomId()).get();
+        for(String name : data.getUsers()) {
+            User user = userRepository.findById(name).get();
+            chatRoomUserRepository.save(ChatRoomUser.create(chatRoom, user));
+        }
+    }
+
+    @Transactional
+    public void exitUser(String roomId, String userId) {
+        chatRoomUserRepository.deleteByChatRoomIdAndUserId(roomId, userId);
+    }
 }

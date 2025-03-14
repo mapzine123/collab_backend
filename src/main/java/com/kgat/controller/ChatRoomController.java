@@ -2,11 +2,11 @@ package com.kgat.controller;
 
 import com.kgat.dto.*;
 import com.kgat.entity.ChatRoom;
+import com.kgat.entity.User;
 import com.kgat.service.ChatRoomService;
+import com.kgat.service.ChatService;
 import com.kgat.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.aspectj.bridge.Message;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final MessageService messageService;
+    private final ChatService chatService;
 
     @PostMapping
     public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody ChatRoomDTO request, @AuthenticationPrincipal UserDetails userDetails) {
@@ -55,4 +56,23 @@ public class ChatRoomController {
 
         return ResponseEntity.ok(messages);
     }
+
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<List<User>> getChatRoomUsers(@AuthenticationPrincipal UserDetails userDetails, @PathVariable("chatRoomId") String chatRoomId) {
+        List<User> users = chatService.getChatRoomUsers(chatRoomId);
+        return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<String> addChatRoomUsers(@RequestBody ChatUserRequestDTO data) {
+        chatRoomService.addUsers(data);
+        return ResponseEntity.ok("초대 완료");
+    }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<String> exitChatRoomUsers(@RequestParam String userId, @RequestParam String roomId) {
+        chatRoomService.exitUser(roomId, userId);
+        return ResponseEntity.ok("나가기 완료");
+    }
+
 }

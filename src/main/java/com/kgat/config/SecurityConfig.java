@@ -50,15 +50,13 @@ public class SecurityConfig {
 
                 // HTTP 요청에 대한 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // 로그인
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // 회원가입
-                        .requestMatchers("/api/users/profile").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/articles").permitAll() // 인증 필요없는 GET 매핑
-                        .requestMatchers("/api/articles/**").permitAll() // articles 관련 API는 인증 없이 접근 가능
-                        .requestMatchers("/api/comments/**").permitAll() // comments 관련 API는 인증 없이 접근 가능
-                        .requestMatchers("/ws/chat/**").permitAll()
-                        .requestMatchers("/api/chats/**").permitAll()
-                        .anyRequest().authenticated() // 그 외 api는 인증 필요
+//                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+//                        .requestMatchers("/api/users/**").permitAll()
+//                        .requestMatchers("/api/articles/**").permitAll()
+//                        .requestMatchers("/api/comments/**").permitAll()
+//                        .requestMatchers("/ws/chat/**").permitAll()
+//                        .requestMatchers("/api/chat/rooms/**").permitAll()
+                        .anyRequest().permitAll() // 그 외 api는 인증 필요
                 )
                 // JWT 인증 필터 추가
                 // JwtAuthenticationFilter : JWT 토큰을 검증하여 사용자를 인증하는 역할
