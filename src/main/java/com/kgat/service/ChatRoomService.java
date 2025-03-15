@@ -23,27 +23,18 @@ public class ChatRoomService {
     private final UserRepository userRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
 
-    public ChatRoom createRoom(String chatRoomName, String creatorId, List<String> userIds) {
+    @Transactional
+    public ChatRoom createRoom(String chatRoomName, String creatorId, List<String> users) {
         // 채팅방 생성
         ChatRoom chatRoom = ChatRoom.create(chatRoomName);
+        chatRoomRepository.save(chatRoom);
 
-        // 생성자를 채팅방에 추가
-        User creator = userRepository.findById(creatorId)
-                .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
-
-        addUserToChatRoom(chatRoom, creator);
+        // 채팅방 생성자 추가
+        users.add(creatorId);
 
         // 초대된 사용자들을 채팅방에 추가
-        List<User> users = userRepository.findAllById(userIds);
-        users.forEach(user -> addUserToChatRoom(chatRoom, user));
-
-        chatRoomRepository.save(chatRoom);
+        addUsers(new ChatUserRequestDTO(chatRoom.getId(), users));
         return chatRoom;
-    }
-
-    private void addUserToChatRoom(ChatRoom chatRoom, User user) {
-        ChatRoomUser chatRoomUser = ChatRoomUser.create(chatRoom, user);
-        chatRoom.addUser(chatRoomUser);
     }
 
     public List<ChatRoom> findAllRoomsByUserId(String userId) {

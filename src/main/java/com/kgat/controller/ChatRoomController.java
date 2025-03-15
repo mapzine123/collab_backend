@@ -24,8 +24,9 @@ public class ChatRoomController {
     private final ChatService chatService;
 
     @PostMapping
-    public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody ChatRoomDTO request, @AuthenticationPrincipal UserDetails userDetails) {
-        ChatRoom chatRoom = chatRoomService.createRoom(request.getName(), userDetails.getUsername(), request.getUserIds());
+    public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody ChatRoomRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println(request);
+        ChatRoom chatRoom = chatRoomService.createRoom(request.getChatRoomName(), userDetails.getUsername(), request.getUsers());
 
         return ResponseEntity.ok(new ChatRoomResponse(chatRoom.getId()));
     }
