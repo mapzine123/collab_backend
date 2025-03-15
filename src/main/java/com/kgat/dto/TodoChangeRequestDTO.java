@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
-public class TodoDTO {
+public class TodoChangeRequestDTO {
     private Long id;
     private String name;
     private String content;

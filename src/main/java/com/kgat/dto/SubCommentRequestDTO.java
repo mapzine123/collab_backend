@@ -11,19 +11,19 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubCommentDTO {
+public class SubCommentRequestDTO {
     private long subCommentId;
     private long commentId;
     private String userId;
     private String subCommentText;
 
-    public SubCommentDTO(long commentId, String userId, String subCommentText) {
+    public SubCommentRequestDTO(long commentId, String userId, String subCommentText) {
         this.commentId = commentId;
         this.userId = userId;
         this.subCommentText = subCommentText;
     }
 
-    public SubCommentDTO(long subCommentId, String userId) {
+    public SubCommentRequestDTO(long subCommentId, String userId) {
         this.subCommentId = subCommentId;
         this.userId = userId;
     }

@@ -1,6 +1,6 @@
 package com.kgat.service;
 
-import com.kgat.dto.ChatUserRequestDTO;
+import com.kgat.dto.ChatRoomPostUserRequestDTO;
 import com.kgat.entity.ChatRoom;
 import com.kgat.entity.ChatRoomUser;
 import com.kgat.entity.User;
@@ -33,7 +33,7 @@ public class ChatRoomService {
         users.add(creatorId);
 
         // 초대된 사용자들을 채팅방에 추가
-        addUsers(new ChatUserRequestDTO(chatRoom.getId(), users));
+        addUsers(new ChatRoomPostUserRequestDTO(chatRoom.getId(), users));
         return chatRoom;
     }
 
@@ -60,7 +60,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public void addUsers(ChatUserRequestDTO data) {
+    public void addUsers(ChatRoomPostUserRequestDTO data) {
         ChatRoom chatRoom = chatRoomRepository.findById(data.getRoomId()).get();
         for(String name : data.getUsers()) {
             User user = userRepository.findById(name).get();

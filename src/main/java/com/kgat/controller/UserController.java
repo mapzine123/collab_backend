@@ -1,27 +1,20 @@
 package com.kgat.controller;
 
-import com.kgat.dto.ProfileImageRequestDTO;
+import com.kgat.dto.UserPostProfileImageRequestDTO;
 import com.kgat.dto.UserResponseDTO;
-import com.kgat.dto.UserSignupDTO;
+import com.kgat.dto.UserPostRequestDTO;
 import com.kgat.entity.User;
 import com.kgat.service.UserService;
-import com.kgat.dto.PasswordUpdateDTO;
+import com.kgat.dto.UserUpdatePasswordRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.*;
 import java.util.List;
-
-import com.kgat.vo.Constants;
 
 
 @RequiredArgsConstructor
@@ -32,7 +25,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserSignupDTO userDto) {
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserPostRequestDTO userDto) {
         try {
             User savedUser = userService.save(userDto);
             UserResponseDTO response = new UserResponseDTO(
@@ -51,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateDTO request) {
+    public ResponseEntity<User> updatePassword(@RequestBody UserUpdatePasswordRequestDto request) {
         try {
             userService.updateUserPassword(request.getUserId(), request.getPassword());
             return ResponseEntity.ok().build();
@@ -72,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity<String> updateProfileImage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ProfileImageRequestDTO request) {
+    public ResponseEntity<String> updateProfileImage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UserPostProfileImageRequestDTO request) {
         try {
             log.info("S3 프로필 이미지 업데이트 요청: {}", request.getUserId());
             userService.updateUserProfileImage(request.getUserId(), request.getImagePath(), request.getImageUrl());

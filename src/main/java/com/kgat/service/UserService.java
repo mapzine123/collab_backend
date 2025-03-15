@@ -1,13 +1,12 @@
 package com.kgat.service;
 
-import com.kgat.dto.ProfileImageRequestDTO;
+import com.kgat.dto.UserPostProfileImageRequestDTO;
 import com.kgat.dto.UserResponseDTO;
-import com.kgat.dto.UserSignupDTO;
+import com.kgat.dto.UserPostRequestDTO;
 import com.kgat.entity.User;
 import com.kgat.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public User save(UserSignupDTO userDto) {
+    public User save(UserPostRequestDTO userDto) {
         // 중복 ID 검사 수행
         if(userRepository.existsById(userDto.getId())) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
@@ -93,10 +92,10 @@ public class UserService {
         log.info("사용자 S3 이미지 정보가 업데이트되었습니다: {}, 경로: {}", userId, imagePath);
     }
 
-    public ProfileImageRequestDTO getUserProfile(String userId) {
+    public UserPostProfileImageRequestDTO getUserProfile(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + userId));
 
-        return ProfileImageRequestDTO.builder()
+        return UserPostProfileImageRequestDTO.builder()
                 .userId(user.getId())
                 .imagePath(user.getImagePath())
                 .imageUrl((user.getImageUrl()))

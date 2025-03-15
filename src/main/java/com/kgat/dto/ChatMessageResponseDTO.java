@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ChatMessageDTO {
+public class ChatMessageResponseDTO {
     private MessageType type;
     private Long roomId;
     private String senderId;

@@ -6,7 +6,7 @@ import com.kgat.repository.CommentRepository;
 import com.kgat.repository.SubCommentReactionRepository;
 import com.kgat.repository.SubCommentRepository;
 import com.kgat.vo.ReactionType;
-import com.kgat.dto.SubCommentDTO;
+import com.kgat.dto.SubCommentRequestDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class SubCommentService {
         return subComments;
     }
 
-    public SubComment saveSubComment(SubCommentDTO data) {
+    public SubComment saveSubComment(SubCommentRequestDTO data) {
         SubComment subComment = new SubComment(data.getCommentId(), data.getSubCommentText(), data.getUserId());
         try {
             SubComment newSubComment = subCommentRepository.save(subComment);

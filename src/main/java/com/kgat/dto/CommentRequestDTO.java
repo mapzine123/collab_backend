@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentRequestDTO {
     private Long commentId;
     private String commentText;
     private String userId;
 
-    public CommentDTO(long commentId, String userId) {
+    public CommentRequestDTO(long commentId, String userId) {
         this.commentId = commentId;
         this.userId = userId;
     }

@@ -24,11 +24,11 @@ public class ChatRoomController {
     private final ChatService chatService;
 
     @PostMapping
-    public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody ChatRoomRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ChatRoomPostResponseDTO> createChatRoom(@RequestBody ChatRoomRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) {
         System.out.println(request);
         ChatRoom chatRoom = chatRoomService.createRoom(request.getChatRoomName(), userDetails.getUsername(), request.getUsers());
 
-        return ResponseEntity.ok(new ChatRoomResponse(chatRoom.getId()));
+        return ResponseEntity.ok(new ChatRoomPostResponseDTO(chatRoom.getId()));
     }
 
     @GetMapping
@@ -40,9 +40,10 @@ public class ChatRoomController {
                         .id(chatRoom.getId())
                         .name(chatRoom.getName())
                         .users(chatRoom.getUsers().stream()
-                                .map(chatRoomUser -> UserDTO.builder()
+                                .map(chatRoomUser -> UserResponseDTO.builder()
                                         .id(chatRoomUser.getUser().getId())
                                         .name(chatRoomUser.getUser().getName())
+                                        .department(chatRoomUser.getUser().getDepartment())
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())
@@ -52,8 +53,8 @@ public class ChatRoomController {
     }
 
     @GetMapping("/messages/{roomId}")
-    public ResponseEntity<List<ChatMessageDTO>> getMessages(@PathVariable String roomId, @AuthenticationPrincipal UserDetails userDetails) {
-        List<ChatMessageDTO> messages = messageService.getMessages(roomId, userDetails.getUsername());
+    public ResponseEntity<List<ChatMessageResponseDTO>> getMessages(@PathVariable String roomId, @AuthenticationPrincipal UserDetails userDetails) {
+        List<ChatMessageResponseDTO> messages = messageService.getMessages(roomId, userDetails.getUsername());
 
         return ResponseEntity.ok(messages);
     }
@@ -65,7 +66,7 @@ public class ChatRoomController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<String> addChatRoomUsers(@RequestBody ChatUserRequestDTO data) {
+    public ResponseEntity<String> addChatRoomUsers(@RequestBody ChatRoomPostUserRequestDTO data) {
         chatRoomService.addUsers(data);
         return ResponseEntity.ok("초대 완료");
     }

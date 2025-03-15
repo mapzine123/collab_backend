@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class ProfileImageRequestDTO {
+public class UserPostProfileImageRequestDTO {
     private String userId;
     private String imagePath;
     private String imageUrl;

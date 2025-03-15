@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ChatUserRequestDTO {
+public class ChatRoomPostUserRequestDTO {
     private String roomId;
     private List<String> users;
 }

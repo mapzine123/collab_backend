@@ -1,7 +1,7 @@
 package com.kgat.controller;
 
 import com.kgat.dto.TodoChangesDTO;
-import com.kgat.dto.TodoDTO;
+import com.kgat.dto.TodoChangeRequestDTO;
 import com.kgat.entity.Todo;
 import com.kgat.service.TodoService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class TodoController {
 
     // 해당 User의 전체 to-do 반환
     @GetMapping
-    public ResponseEntity<List<TodoDTO>> getTodos(@AuthenticationPrincipal UserDetails userDetails) {
-        List<TodoDTO> todos = todoService.findAllTodos();
+    public ResponseEntity<List<TodoChangeRequestDTO>> getTodos(@AuthenticationPrincipal UserDetails userDetails) {
+        List<TodoChangeRequestDTO> todos = todoService.findAllTodos();
 
         if(todos.isEmpty()) {
             return ResponseEntity.ok(new ArrayList<>());  // 빈 배열 반환
@@ -33,9 +33,9 @@ public class TodoController {
 
     // To-do 추가
     @PostMapping
-    public ResponseEntity<TodoDTO> addTodo(@AuthenticationPrincipal UserDetails userDetails, @RequestBody TodoDTO todoDTO) {
+    public ResponseEntity<TodoChangeRequestDTO> addTodo(@AuthenticationPrincipal UserDetails userDetails, @RequestBody TodoChangeRequestDTO todoChangeRequestDTO) {
         String userId = userDetails.getUsername();
-        TodoDTO savedTodo = todoService.addTodo(todoDTO, userId);
+        TodoChangeRequestDTO savedTodo = todoService.addTodo(todoChangeRequestDTO, userId);
         System.out.println(savedTodo);
         return ResponseEntity.ok(savedTodo);
     }

@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatRoomResponse {
+public class ChatRoomPostResponseDTO {
     private String roomId;
 }

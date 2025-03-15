@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter
 @Setter
-public class UserSignupDTO {
+public class UserPostRequestDTO {
     @NotBlank(message = "아이디는 필수 입력값입니다")
     private String id;
 

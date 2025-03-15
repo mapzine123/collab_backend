@@ -1,7 +1,7 @@
 package com.kgat.chatting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kgat.dto.ChatMessage;
+import com.kgat.dto.ChatMessageRequestDTO;
 import com.kgat.entity.ChatRoom;
 import com.kgat.entity.User;
 import com.kgat.security.JwtTokenProvider;
@@ -65,24 +65,24 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         log.info("받은 메시지: {}", payload);
         try {
             // JSON 문자열을 ChatMessage 객체로 변환
-            ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
+            ChatMessageRequestDTO chatMessageRequestDTO = objectMapper.readValue(payload, ChatMessageRequestDTO.class);
 
             // 채팅방 ID로 해당 채팅방을 조회
-            ChatRoom room = chatRoomService.findRoomById(chatMessage.getRoomId());
+            ChatRoom room = chatRoomService.findRoomById(chatMessageRequestDTO.getRoomId());
 
             if (room != null) {
-                handleChatMessage(session, chatMessage, room);
+                handleChatMessage(session, chatMessageRequestDTO, room);
             } else {
                 // 채팅방이 존재하지 않으면 에러메시지 전송
-                ChatMessage errorMessage = new ChatMessage();
-                errorMessage.setType(ChatMessage.MessageType.ERROR);
+                ChatMessageRequestDTO errorMessage = new ChatMessageRequestDTO();
+                errorMessage.setType(ChatMessageRequestDTO.MessageType.ERROR);
                 errorMessage.setContent("존재하지 않는 채팅방입니다.");
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(errorMessage)));
             }
         } catch(IOException e) {
             log.error("메시지 처리 중 오류 발생", e);
-            ChatMessage errorMessage = new ChatMessage();
-            errorMessage.setType(ChatMessage.MessageType.ERROR);
+            ChatMessageRequestDTO errorMessage = new ChatMessageRequestDTO();
+            errorMessage.setType(ChatMessageRequestDTO.MessageType.ERROR);
             errorMessage.setContent("메시지 처리 중 오류가 발생했습니다.");
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(errorMessage)));
         }
@@ -90,28 +90,28 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // 메시지 타입에 따라 적절한 처리 메서드 호출
-    private void handleChatMessage(WebSocketSession session, ChatMessage chatMessage, ChatRoom room) throws IOException {
-        switch(chatMessage.getType()) {
+    private void handleChatMessage(WebSocketSession session, ChatMessageRequestDTO chatMessageRequestDTO, ChatRoom room) throws IOException {
+        switch(chatMessageRequestDTO.getType()) {
             case ENTER :
-                handleEnterMessage(session, chatMessage, room);
+                handleEnterMessage(session, chatMessageRequestDTO, room);
                 break;
             case TALK :
-                handleTalkMessage(session, chatMessage, room);
+                handleTalkMessage(session, chatMessageRequestDTO, room);
                 break;
             case LEAVE :
-                handleLeaveMessage(session, chatMessage, room);
+                handleLeaveMessage(session, chatMessageRequestDTO, room);
                 break;
             case ERROR :
-                handleErrorMessage(session, chatMessage);
+                handleErrorMessage(session, chatMessageRequestDTO);
                 break;
             default :
-                handleUnknownMessageType(session, chatMessage);
+                handleUnknownMessageType(session, chatMessageRequestDTO);
                 break;
         }
     }
 
     // 사용자가 채팅방에 입장할 때의 처리
-    private void handleEnterMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
+    private void handleEnterMessage(WebSocketSession session, ChatMessageRequestDTO message, ChatRoom room) throws IOException {
         // JWT 토큰엣어 사용자 ID 추출
         String userId = message.getSenderId();
         System.out.println(userId);
@@ -131,7 +131,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // 일반 대화 메시지 처리
-    private void handleTalkMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
+    private void handleTalkMessage(WebSocketSession session, ChatMessageRequestDTO message, ChatRoom room) throws IOException {
         try {
             // 사용자 정보 조회
             String userId = message.getSenderId();
@@ -151,7 +151,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // 사용자가 채팅방을 나갈 때의 처리
-    private void handleLeaveMessage(WebSocketSession session, ChatMessage message, ChatRoom room) throws IOException {
+    private void handleLeaveMessage(WebSocketSession session, ChatMessageRequestDTO message, ChatRoom room) throws IOException {
         // JWT 토큰엣어 사용자 ID 추출
         String token = message.getSenderId();
         String userId = jwtTokenProvider.getUserIdFromToken(token);
@@ -175,7 +175,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // 에러 메시지 처리
-    private void handleErrorMessage(WebSocketSession session, ChatMessage message) throws IOException {
+    private void handleErrorMessage(WebSocketSession session, ChatMessageRequestDTO message) throws IOException {
         // 에러 메시지는 해당 세션에만 전송
         log.error("채팅 에러 발생 : {}", message.getContent());
         TextMessage errorMessage = new TextMessage(objectMapper.writeValueAsString(message));
@@ -183,10 +183,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // 알 수 없는 메시지 타입을 처리하는 메서드
-    private void handleUnknownMessageType(WebSocketSession session, ChatMessage message) throws IOException {
+    private void handleUnknownMessageType(WebSocketSession session, ChatMessageRequestDTO message) throws IOException {
         log.warn("알 수 없는 메시지 타입 : {}", message.getType());
-        ChatMessage errorMessage = new ChatMessage();
-        errorMessage.setType(ChatMessage.MessageType.ERROR);
+        ChatMessageRequestDTO errorMessage = new ChatMessageRequestDTO();
+        errorMessage.setType(ChatMessageRequestDTO.MessageType.ERROR);
         errorMessage.setContent("알 수 없는 메시지 타입입니다.");
 
         TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(message));
@@ -194,7 +194,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // 특정 채팅방의 모든 접속자에게 메시지를 전송
-    private void sendMessageToRoom(String roomId, ChatMessage message) throws IOException {
+    private void sendMessageToRoom(String roomId, ChatMessageRequestDTO message) throws IOException {
         Set<WebSocketSession> sessions = roomSessions.get(roomId);
         if(sessions != null) {
             TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(message));

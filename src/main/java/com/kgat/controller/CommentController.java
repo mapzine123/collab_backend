@@ -5,8 +5,8 @@ import com.kgat.entity.SubComment;
 import com.kgat.repository.SubCommentRepository;
 import com.kgat.service.CommentService;
 import com.kgat.service.SubCommentService;
-import com.kgat.dto.CommentDTO;
-import com.kgat.dto.SubCommentDTO;
+import com.kgat.dto.CommentRequestDTO;
+import com.kgat.dto.SubCommentRequestDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -55,7 +55,7 @@ public class CommentController {
     }
 
     @PutMapping
-    public ResponseEntity<Comment> modifyComment(@RequestBody CommentDTO data) {
+    public ResponseEntity<Comment> modifyComment(@RequestBody CommentRequestDTO data) {
         try {
             Comment comment = commentService.updateComment(data);
 
@@ -81,14 +81,14 @@ public class CommentController {
     }
 
     @PostMapping("/reaction/like")
-    public ResponseEntity<Comment> likeArticle(@RequestBody CommentDTO data) {
+    public ResponseEntity<Comment> likeArticle(@RequestBody CommentRequestDTO data) {
         Comment comment = commentService.likeComment(data);
 
         return ResponseEntity.ok(comment);
     }
 
     @PostMapping("/reaction/hate")
-    public ResponseEntity<Comment> hateArticle(@RequestBody CommentDTO data) {
+    public ResponseEntity<Comment> hateArticle(@RequestBody CommentRequestDTO data) {
         Comment comment = commentService.hateComment(data);
 
         return ResponseEntity.ok(comment);
@@ -112,7 +112,7 @@ public class CommentController {
     }
 
     @PostMapping("/subComments")
-    public ResponseEntity<SubComment> addSubComment(@RequestBody SubCommentDTO data) {
+    public ResponseEntity<SubComment> addSubComment(@RequestBody SubCommentRequestDTO data) {
         try {
             SubComment subcomment = subCommentService.saveSubComment(data);
             return ResponseEntity.ok(subcomment);
@@ -122,7 +122,7 @@ public class CommentController {
     }
 
     @PostMapping("/subComments/like")
-    public ResponseEntity<?> likeSubComment(@RequestBody SubCommentDTO data) {
+    public ResponseEntity<?> likeSubComment(@RequestBody SubCommentRequestDTO data) {
         try {
             SubComment subComment = subCommentService.likeSubComment(data.getSubCommentId(), data.getUserId());
 
@@ -136,7 +136,7 @@ public class CommentController {
     }
 
     @PostMapping("/subComments/hate")
-    public ResponseEntity<?> hateSubComment(@RequestBody SubCommentDTO data) {
+    public ResponseEntity<?> hateSubComment(@RequestBody SubCommentRequestDTO data) {
         try {
             SubComment subComment = subCommentService.hateSubComment(data.getSubCommentId(), data.getUserId());
 

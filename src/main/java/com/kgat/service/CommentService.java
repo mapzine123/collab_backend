@@ -4,7 +4,7 @@ import com.kgat.entity.Comment;
 import com.kgat.entity.CommentReaction;
 import com.kgat.repository.CommentReactionRepository;
 import com.kgat.repository.CommentRepository;
-import com.kgat.dto.CommentDTO;
+import com.kgat.dto.CommentRequestDTO;
 import com.kgat.vo.ReactionType;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment updateComment(CommentDTO data) {
+    public Comment updateComment(CommentRequestDTO data) {
         try {
             commentRepository.updateComment(data.getCommentText(), data.getCommentId());
 
@@ -90,7 +90,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment likeComment(CommentDTO data) {
+    public Comment likeComment(CommentRequestDTO data) {
         // DB에서 reaction 찾아옴
         Optional<CommentReaction> reaction = commentReactionRepository.findByCommentIdAndUserId(data.getCommentId(), data.getUserId());
         Comment comment = commentRepository.findByCommentIdAndUserId(data.getCommentId(), data.getUserId());
@@ -134,7 +134,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment hateComment(CommentDTO data) {
+    public Comment hateComment(CommentRequestDTO data) {
         // DB에서 reaction 찾아옴
         Optional<CommentReaction> reaction = commentReactionRepository.findByCommentIdAndUserId(data.getCommentId(), data.getUserId());
         Comment comment = commentRepository.findByCommentId(data.getCommentId());

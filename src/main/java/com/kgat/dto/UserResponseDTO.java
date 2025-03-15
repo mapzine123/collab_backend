@@ -1,11 +1,11 @@
 package com.kgat.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserResponseDTO {
     private String id;          // 아이디
     private String name;        // 실명

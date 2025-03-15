@@ -15,5 +15,5 @@ import java.util.List;
 public class ChatRoomResponseDTO {
     private String id;
     private String name;
-    private List<UserDTO> users;
+    private List<UserResponseDTO> users;
 }

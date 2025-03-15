@@ -1,7 +1,7 @@
 package com.kgat.service;
 
 import com.kgat.dto.TodoChangesDTO;
-import com.kgat.dto.TodoDTO;
+import com.kgat.dto.TodoChangeRequestDTO;
 import com.kgat.entity.Todo;
 import com.kgat.entity.User;
 import com.kgat.repository.TodoRepository;
@@ -20,37 +20,37 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
-    public List<TodoDTO> findAllTodos() {
+    public List<TodoChangeRequestDTO> findAllTodos() {
         List<Todo> todos = (List<Todo>) todoRepository.findAll();
         return todos.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<TodoDTO> findAllTodos(String userId) {
+    public List<TodoChangeRequestDTO> findAllTodos(String userId) {
         List<Todo> todos = todoRepository.findAllByUser(userId);
         return todos.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    private void upsertTodos(List<TodoDTO> todoDTOs, User user) {
-        List<Todo> todos = todoDTOs.stream()
+    private void upsertTodos(List<TodoChangeRequestDTO> todoChangeRequestDTOS, User user) {
+        List<Todo> todos = todoChangeRequestDTOS.stream()
                 .map(dto -> convertToEntity(dto, user))
                 .collect(Collectors.toList());
         todoRepository.saveAll(todos);
     }
 
-    private void deleteTodos(List<TodoDTO> todoDTOs, User user) {
-        List<Todo> todos = todoDTOs.stream()
+    private void deleteTodos(List<TodoChangeRequestDTO> todoChangeRequestDTOS, User user) {
+        List<Todo> todos = todoChangeRequestDTOS.stream()
                 .map(dto -> convertToEntity(dto, user))
                 .collect(Collectors.toList());
         todoRepository.deleteAll(todos);
     }
 
-    public TodoDTO addTodo(TodoDTO todoDTO, String userId) {
+    public TodoChangeRequestDTO addTodo(TodoChangeRequestDTO todoChangeRequestDTO, String userId) {
         User user = userRepository.findById(userId).get();
-        Todo todo = convertToEntity(todoDTO, user);
+        Todo todo = convertToEntity(todoChangeRequestDTO, user);
         return convertToDTO(todoRepository.save(todo));
     }
 
@@ -68,8 +68,8 @@ public class TodoService {
     }
 
     // Entity -> DTO
-    private TodoDTO convertToDTO(Todo todo) {
-        return TodoDTO.builder()
+    private TodoChangeRequestDTO convertToDTO(Todo todo) {
+        return TodoChangeRequestDTO.builder()
                 .id(todo.getId())
                 .content(todo.getContent())
                 .department((todo.getUser().getDepartment()))
@@ -82,7 +82,7 @@ public class TodoService {
     }
 
     // DTO -> Entity
-    private Todo convertToEntity(TodoDTO dto, User user) {
+    private Todo convertToEntity(TodoChangeRequestDTO dto, User user) {
         return Todo.builder()
                 .id(dto.getId())
                 .content(dto.getContent())

@@ -3,7 +3,7 @@ package com.kgat.dto;
 import lombok.Data;
 
 @Data
-public class ChatMessage {
+public class ChatMessageRequestDTO {
     public enum MessageType {
         ENTER, TALK, LEAVE, ERROR
     }
