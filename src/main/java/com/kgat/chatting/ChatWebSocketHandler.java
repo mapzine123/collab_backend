@@ -112,9 +112,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     // 사용자가 채팅방에 입장할 때의 처리
     private void handleEnterMessage(WebSocketSession session, ChatMessageRequestDTO message, ChatRoom room) throws IOException {
-        // JWT 토큰엣어 사용자 ID 추출
+        // JWT 토큰에서 사용자 ID 추출
         String userId = message.getSenderId();
-        System.out.println(userId);
+
         // 세션 정보 저장
         roomSessions.computeIfAbsent(room.getId(), k -> new CopyOnWriteArraySet<>()).add(session);
         sessionRoomMap.put(session, room.getId());

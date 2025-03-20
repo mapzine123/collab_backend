@@ -4,6 +4,7 @@ import com.kgat.dto.TodoChangesDTO;
 import com.kgat.dto.TodoChangeRequestDTO;
 import com.kgat.entity.Todo;
 import com.kgat.service.TodoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "업무리스트 관련 API", description = "업무리스트 관련 CRUD 작업을 처리하는 API")
 @RestController
 @RequestMapping("/api/todos")
 @RequiredArgsConstructor

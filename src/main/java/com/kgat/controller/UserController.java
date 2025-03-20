@@ -6,6 +6,7 @@ import com.kgat.dto.UserPostRequestDTO;
 import com.kgat.entity.User;
 import com.kgat.service.UserService;
 import com.kgat.dto.UserUpdatePasswordRequestDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+@Tag(name = "사용자 관련 API", description = "사용자 관련 CRUD 작업을 처리하는 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")

@@ -3,6 +3,7 @@ package com.kgat.controller;
 import com.kgat.entity.User;
 import com.kgat.security.JwtTokenProvider;
 import com.kgat.service.CustomUserDetailsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+@Tag(name = "인증 관련 API", description = "JWT 토큰 발행을 처리하는 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")

@@ -6,6 +6,7 @@ import com.kgat.entity.User;
 import com.kgat.service.ChatRoomService;
 import com.kgat.service.ChatService;
 import com.kgat.service.MessageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "채팅방 관련 API", description = "채팅방 관련 CRUD 작업을 처리하는 API")
 @RestController
 @RequestMapping("/api/chat/rooms")
 @RequiredArgsConstructor

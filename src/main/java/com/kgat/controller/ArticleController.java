@@ -3,11 +3,13 @@ package com.kgat.controller;
 import com.kgat.entity.Article;
 import com.kgat.service.ArticleService;
 import com.kgat.vo.ArticleData;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "게시글 관련 API", description = "게시글 관련 CRUD 작업을 처리하는 API")
 @RestController
 @RequestMapping("/api/articles")
 public class ArticleController {

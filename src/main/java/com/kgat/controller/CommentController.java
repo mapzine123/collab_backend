@@ -7,6 +7,7 @@ import com.kgat.service.CommentService;
 import com.kgat.service.SubCommentService;
 import com.kgat.dto.CommentRequestDTO;
 import com.kgat.dto.SubCommentRequestDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Tag(name = "댓글 관련 API", description = "댓글 관련 CRUD 작업을 처리하는 API")
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
